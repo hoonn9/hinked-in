@@ -4,19 +4,27 @@ import { UpdateMemberDto } from './dto/update-member.dto';
 import { Repository } from 'typeorm';
 import { Member } from './entity/member.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CryptoService } from '../crypto/crypto.service';
 
 @Injectable()
 export class MemberService {
   constructor(
+    private readonly cryptoService: CryptoService,
+
     @InjectRepository(Member)
     private readonly memberRepository: Repository<Member>,
   ) {}
 
-  async create(createMemberDto: CreateMemberBodyDto) {
+  async create(createMemberDto: CreateMemberBodyDto): Promise<void> {
     const entity = this.memberRepository.create({});
 
     entity.email = createMemberDto.email;
-    entity.password = createMemberDto.password;
+
+    if (createMemberDto.password) {
+      entity.password = await this.cryptoService.hashPassword(
+        createMemberDto.password,
+      );
+    }
 
     await this.memberRepository.save(entity);
   }

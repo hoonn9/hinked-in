@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Member } from '../member/entity/member.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { authMessages } from './auth.constant';
+import { CryptoService } from '../crypto/crypto.service';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,7 @@ export class AuthService {
 
   constructor(
     private readonly jwtService: JwtService,
+    private readonly cryptoService: CryptoService,
 
     @InjectRepository(Member)
     private readonly memberRepository: Repository<Member>,
@@ -32,24 +34,31 @@ export class AuthService {
     return this.localLogin(member, passwordInput);
   }
 
-  private localLogin(member: Member, passwordInput: string): Member {
-    this.canPasswordLogin(member);
+  private async localLogin(
+    member: Member,
+    passwordInput: string,
+  ): Promise<Member> {
+    if (!this.hasPasswordMember(member)) {
+      throw this.loginFailException;
+    }
 
-    if (!this.comparePassword(member, passwordInput)) {
+    if (!(await this.comparePassword(member, passwordInput))) {
       throw this.loginFailException;
     }
 
     return member;
   }
 
-  private comparePassword(member: Member, passwordInput: string): boolean {
-    if (member.password === passwordInput) {
-      return true;
-    }
-    return false;
+  private async comparePassword(
+    member: Member & { password: string },
+    passwordInput: string,
+  ): Promise<boolean> {
+    return this.cryptoService.comparePassword(passwordInput, member.password);
   }
 
-  private canPasswordLogin(member: Member): boolean {
+  private hasPasswordMember(
+    member: Member,
+  ): member is Member & { password: string } {
     return member.password != null;
   }
 }
