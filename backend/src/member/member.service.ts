@@ -15,8 +15,8 @@ export class MemberService {
     private readonly memberRepository: Repository<Member>,
   ) {}
 
-  async create(createMemberDto: CreateMemberBodyDto): Promise<void> {
-    const entity = this.memberRepository.create({});
+  async addMember(createMemberDto: CreateMemberBodyDto): Promise<void> {
+    const entity = new Member();
 
     entity.email = createMemberDto.email;
 

@@ -17,7 +17,7 @@ export class MemberController {
 
   @Post()
   create(@Body() createMemberBodyDto: CreateMemberBodyDto) {
-    return this.memberService.create(createMemberBodyDto);
+    return this.memberService.addMember(createMemberBodyDto);
   }
 
   @Get()
