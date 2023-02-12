@@ -1,7 +1,7 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Injectable } from '@nestjs/common';
-import { AuthService } from '../service/auth.service';
+import { AuthLocalValidateService } from '../service/auth-local-validate.service';
 import { Member } from '../../member/entity/member.entity';
 
 const strategyName = 'LOCAL';
@@ -13,7 +13,9 @@ export class AuthLocalStrategy extends PassportStrategy(
 ) {
   static readonly STRATEGY_NAME = strategyName;
 
-  constructor(private readonly authService: AuthService) {
+  constructor(
+    private readonly authLocalValidateService: AuthLocalValidateService,
+  ) {
     super({
       usernameField: 'email',
       passwordField: 'password',
@@ -21,6 +23,6 @@ export class AuthLocalStrategy extends PassportStrategy(
   }
 
   async validate(username: string, password: string): Promise<Member> {
-    return this.authService.validateMember(username, password);
+    return this.authLocalValidateService.validateMember(username, password);
   }
 }
