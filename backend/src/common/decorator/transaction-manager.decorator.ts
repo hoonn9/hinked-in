@@ -1,8 +1,9 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { TransactionRequest } from '../type/transaction-manager.type';
 
-export const TransactionManager = createParamDecorator(
+export const TransactionManagerParam = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest();
-    return request.entityManager;
+    const request: TransactionRequest = ctx.switchToHttp().getRequest();
+    return request.transactionManager;
   },
 );

@@ -21,7 +21,7 @@ export class TypeormOptionFactory implements TypeOrmOptionsFactory {
       username: this.configService.get('DATABASE_USERNAME'),
       password: this.configService.get('DATABASE_PASSWORD'),
       database: this.configService.get('DATABASE_NAME'),
-      entities: [`${__dirname}/**/*.entity{.ts,.js}`],
+      entities: [`${__dirname}../../../**/*.entity{.ts,.js}`],
       synchronize: true,
       logging: 'all',
     };
@@ -31,7 +31,7 @@ export class TypeormOptionFactory implements TypeOrmOptionsFactory {
     return {
       type: 'sqlite',
       database: ':memory:',
-      entities: [`../**/*.entity{.ts,.js}`],
+      entities: [`${__dirname}../../../**/*.entity{.ts,.js}`],
       synchronize: true,
       logging: 'all',
     };

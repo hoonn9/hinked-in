@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMemberBodyDto } from './dto/create-member-body.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Member } from './entity/member.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CryptoService } from '../crypto/crypto.service';
@@ -15,7 +15,10 @@ export class MemberService {
     private readonly memberRepository: Repository<Member>,
   ) {}
 
-  async addMember(createMemberDto: CreateMemberBodyDto): Promise<void> {
+  async addMember(
+    createMemberDto: CreateMemberBodyDto,
+    manager: EntityManager,
+  ): Promise<void> {
     const entity = new Member();
 
     entity.email = createMemberDto.email;

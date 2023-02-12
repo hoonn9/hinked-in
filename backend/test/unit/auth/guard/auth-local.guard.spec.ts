@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { AuthLocalGuard } from '../../../../src/auth/guard/auth-local.guard';
+import { AuthLocalGuard } from '../../../../src/auth/auth-local/guard/auth-local.guard';
 import { ValidationException } from '../../../../src/common/exception/validation-exception';
 import { faker } from '@faker-js/faker';
 import { mockExecutionContextRequestBody } from '../../../lib/execution-context';
