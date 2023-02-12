@@ -1,15 +1,15 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
-import { Member } from '../member/entity/member.entity';
+import { Member } from '../../member/entity/member.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { authMessages } from './auth.constant';
-import { CryptoService } from '../crypto/crypto.service';
+import { CryptoService } from '../../crypto/crypto.service';
+import { AUTH_EXCEPTION_MESSAGES } from '../constant/auth-exception-message';
 
 @Injectable()
 export class AuthService {
   private readonly loginFailException = new UnauthorizedException(
-    authMessages.loginFail,
+    AUTH_EXCEPTION_MESSAGES.loginFail,
   );
 
   constructor(

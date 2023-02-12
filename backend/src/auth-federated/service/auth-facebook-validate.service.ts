@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { AuthFederateService } from './auth-federate.service';
+import { AuthFederatedService } from './auth-federated.service';
 import { Profile } from 'passport-facebook';
 import { AuthFederateEnum } from '../enum/auth-federate.enum';
-import { AuthFederateValidateService } from './auth-federate-validate.abstract';
+import { AuthFederatedValidateService } from './auth-federated-validate.abstract';
 
 @Injectable()
-export class AuthFacebookValidateService extends AuthFederateValidateService {
-  constructor(private readonly authFederateService: AuthFederateService) {
+export class AuthFacebookValidateService extends AuthFederatedValidateService {
+  constructor(private readonly authFederateService: AuthFederatedService) {
     super();
   }
 

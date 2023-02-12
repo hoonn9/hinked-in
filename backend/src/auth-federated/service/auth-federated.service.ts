@@ -4,11 +4,11 @@ import { FederatedCredential } from '../entity/federated-credential.entity';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 import { Member } from '../../member/entity/member.entity';
 import { CreateMemberBodyDto } from '../../member/dto/create-member-body.dto';
-import { AuthFederateProfile } from './auth-federate.interface';
+import { AuthFederateProfile } from '../interface/auth-federate.interface';
 import { AuthFederateEnum } from '../enum/auth-federate.enum';
 
 @Injectable()
-export class AuthFederateService {
+export class AuthFederatedService {
   constructor(
     @InjectRepository(FederatedCredential)
     private readonly federatedCredentialRepository: Repository<FederatedCredential>,

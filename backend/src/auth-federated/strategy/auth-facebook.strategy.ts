@@ -2,8 +2,8 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-facebook';
 import { ConfigService } from '@nestjs/config';
 import { Injectable } from '@nestjs/common';
-import { Member } from '../../../member/entity/member.entity';
-import { AuthFacebookValidateService } from '../../service/auth-facebook-validate.service';
+import { Member } from '../../member/entity/member.entity';
+import { AuthFacebookValidateService } from '../service/auth-facebook-validate.service';
 
 @Injectable()
 export class AuthFacebookStrategy extends PassportStrategy(Strategy) {

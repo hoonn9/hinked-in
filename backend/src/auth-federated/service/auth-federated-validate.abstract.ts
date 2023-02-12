@@ -2,7 +2,7 @@ import { Profile } from 'passport';
 import { Member } from '../../member/entity/member.entity';
 import { InternalServerErrorException } from '@nestjs/common';
 
-export abstract class AuthFederateValidateService {
+export abstract class AuthFederatedValidateService {
   abstract validate(
     accessToken: string,
     refreshToken: string,

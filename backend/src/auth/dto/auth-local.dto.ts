@@ -1,6 +1,6 @@
 import { IsEmail, IsString, Length } from 'class-validator';
-import { authMessages } from '../auth.constant';
 import { ApiProperty } from '@nestjs/swagger';
+import { AUTH_EXCEPTION_MESSAGES } from '../constant/auth-exception-message';
 
 export class AuthLocalBodyDto {
   @ApiProperty({
@@ -15,7 +15,7 @@ export class AuthLocalBodyDto {
   })
   @IsString()
   @Length(8, undefined, {
-    message: authMessages.loginFail,
+    message: AUTH_EXCEPTION_MESSAGES.loginFail,
   })
   password: string;
 }
