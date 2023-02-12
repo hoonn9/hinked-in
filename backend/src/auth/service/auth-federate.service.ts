@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FederatedCredential } from '../entity/federated-credential.entity';
 import { Repository } from 'typeorm';
@@ -23,7 +23,8 @@ export class AuthFederateService {
     });
 
     if (federatedCredential === null) {
-      federatedCredential = new FederatedCredential();
+      throw new UnauthorizedException('로그인된 소셜 계정이 아닙니다.');
+      // federatedCredential = new FederatedCredential('로그인된 소셜 계정이 아닙니다.');
     }
 
     return federatedCredential.member;
