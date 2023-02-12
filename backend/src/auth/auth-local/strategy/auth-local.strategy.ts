@@ -2,7 +2,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Injectable } from '@nestjs/common';
 import { AuthLocalValidateService } from '../service/auth-local-validate.service';
-import { Member } from '../../member/entity/member.entity';
+import { Member } from '../../../member/entity/member.entity';
 
 const strategyName = 'LOCAL';
 

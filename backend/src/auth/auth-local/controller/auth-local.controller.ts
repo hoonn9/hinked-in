@@ -3,10 +3,10 @@ import { AuthLocalGuard } from '../guard/auth-local.guard';
 import { ApiImplicitBody } from '@nestjs/swagger/dist/decorators/api-implicit-body.decorator';
 import { AuthLocalBodyDto } from '../dto/auth-local.dto';
 import { ApiTags } from '@nestjs/swagger';
-import { CurrentUser } from '../decorator/current-user.decorator';
-import { Member } from '../../member/entity/member.entity';
+import { CurrentUser } from '../../decorator/current-user.decorator';
+import { Member } from '../../../member/entity/member.entity';
 import { Response } from 'express';
-import { AuthJwtCookieService } from '../service/auth-jwt-cookie.service';
+import { AuthJwtCookieService } from '../../jwt/service/auth-jwt-cookie.service';
 
 @ApiTags('auth')
 @Controller('auth')

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthJwtGeneratorService } from './auth-jwt-generator.service';
-import { Member } from '../../member/entity/member.entity';
-import { CookieService } from '../../common/service/cookie.service';
+import { Member } from '../../../member/entity/member.entity';
+import { CookieService } from '../../../common/service/cookie.service';
 import { Response } from 'express';
 
 @Injectable()

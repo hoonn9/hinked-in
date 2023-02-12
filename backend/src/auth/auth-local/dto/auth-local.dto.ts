@@ -1,6 +1,6 @@
 import { IsEmail, IsString, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { AUTH_EXCEPTION_MESSAGES } from '../constant/auth-exception-message';
+import { AUTH_EXCEPTION_MESSAGES } from '../../constant/auth-exception-message';
 
 export class AuthLocalBodyDto {
   @ApiProperty({

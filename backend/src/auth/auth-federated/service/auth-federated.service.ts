@@ -2,8 +2,8 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FederatedCredential } from '../entity/federated-credential.entity';
 import { DataSource, EntityManager, Repository } from 'typeorm';
-import { Member } from '../../member/entity/member.entity';
-import { CreateMemberBodyDto } from '../../member/dto/create-member-body.dto';
+import { Member } from '../../../member/entity/member.entity';
+import { CreateMemberBodyDto } from '../../../member/dto/create-member-body.dto';
 import { AuthFederateProfile } from '../interface/auth-federate.interface';
 import { AuthFederateEnum } from '../enum/auth-federate.enum';
 

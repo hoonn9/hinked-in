@@ -1,9 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Member } from '../../member/entity/member.entity';
+import { Member } from '../../../member/entity/member.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CryptoService } from '../../crypto/crypto.service';
-import { AUTH_EXCEPTION_MESSAGES } from '../constant/auth-exception-message';
+import { CryptoService } from '../../../crypto/crypto.service';
+import { AUTH_EXCEPTION_MESSAGES } from '../../constant/auth-exception-message';
 
 @Injectable()
 export class AuthLocalValidateService {

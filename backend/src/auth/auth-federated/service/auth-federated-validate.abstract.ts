@@ -1,5 +1,5 @@
 import { Profile } from 'passport';
-import { Member } from '../../member/entity/member.entity';
+import { Member } from '../../../member/entity/member.entity';
 import { InternalServerErrorException } from '@nestjs/common';
 
 export abstract class AuthFederatedValidateService {

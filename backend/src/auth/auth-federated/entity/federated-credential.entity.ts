@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Member } from '../../member/entity/member.entity';
+import { Member } from '../../../member/entity/member.entity';
 import { AuthFederateEnum } from '../enum/auth-federate.enum';
 
 @Entity()

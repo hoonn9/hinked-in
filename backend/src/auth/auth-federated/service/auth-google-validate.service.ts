@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AuthFederatedService } from './auth-federated.service';
-import { Member } from '../../member/entity/member.entity';
+import { Member } from '../../../member/entity/member.entity';
 import { Profile } from 'passport-google-oauth20';
 import { AuthFederateEnum } from '../enum/auth-federate.enum';
 import { AuthFederatedValidateService } from './auth-federated-validate.abstract';

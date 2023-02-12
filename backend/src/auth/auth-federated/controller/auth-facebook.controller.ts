@@ -1,7 +1,7 @@
 import { Controller, Get, Redirect, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { CurrentUser } from '../../auth/decorator/current-user.decorator';
-import { Member } from '../../member/entity/member.entity';
+import { CurrentUser } from '../../decorator/current-user.decorator';
+import { Member } from '../../../member/entity/member.entity';
 import { Response } from 'express';
 
 @Controller('auth/facebook')
