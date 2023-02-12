@@ -1,8 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FederatedCredential } from '../entity/federated-credential.entity';
-import { Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { Member } from '../../member/entity/member.entity';
+import { CreateMemberBodyDto } from '../../member/dto/create-member-body.dto';
+import { AuthFederateProfile } from './auth-federate.interface';
+import { AuthFederateEnum } from '../enum/auth-federate.enum';
 
 @Injectable()
 export class AuthFederateService {
@@ -12,21 +15,63 @@ export class AuthFederateService {
 
     @InjectRepository(Member)
     private readonly memberRepository: Repository<Member>,
+
+    private readonly dataSource: DataSource,
   ) {}
 
-  async validate(profileId: string): Promise<Member> {
-    let federatedCredential = await this.federatedCredentialRepository.findOne({
-      where: {
-        profileId,
-      },
-      relations: ['member'],
+  async validate(
+    type: AuthFederateEnum,
+    profile: AuthFederateProfile,
+  ): Promise<Member> {
+    return this.dataSource.transaction(async (manager) => {
+      const federatedCredential = await manager.findOne(FederatedCredential, {
+        where: {
+          profileId: profile.profileId,
+          type,
+        },
+        relations: ['member'],
+      });
+
+      if (federatedCredential) {
+        return federatedCredential.member;
+      }
+
+      return this.joinMember(type, profile, manager);
     });
+  }
 
-    if (federatedCredential === null) {
-      throw new UnauthorizedException('로그인된 소셜 계정이 아닙니다.');
-      // federatedCredential = new FederatedCredential('로그인된 소셜 계정이 아닙니다.');
-    }
+  private async joinMember(
+    type: AuthFederateEnum,
+    profile: AuthFederateProfile,
+    manager: EntityManager,
+  ): Promise<Member> {
+    const member = await this.addMember(profile, manager);
+    await this.addFederatedCredential(type, profile, member, manager);
+    return member;
+  }
 
-    return federatedCredential.member;
+  private async addFederatedCredential(
+    type: AuthFederateEnum,
+    profile: AuthFederateProfile,
+    member: Member,
+    manager: EntityManager,
+  ): Promise<void> {
+    const federatedCredential = new FederatedCredential();
+    federatedCredential.type = type;
+    federatedCredential.profileId = profile.profileId;
+    federatedCredential.member = member;
+
+    await manager.save(federatedCredential);
+  }
+
+  private async addMember(
+    profile: AuthFederateProfile,
+    manager: EntityManager,
+  ): Promise<Member> {
+    const member = new Member();
+    member.email = profile.email;
+
+    await manager.save(member);
+    return member;
   }
 }

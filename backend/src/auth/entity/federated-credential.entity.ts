@@ -1,5 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Member } from '../../member/entity/member.entity';
+import { AuthFederateEnum } from '../enum/auth-federate.enum';
 
 @Entity()
 export class FederatedCredential {
@@ -11,6 +12,11 @@ export class FederatedCredential {
   @Column({ type: 'text' })
   profileId: string;
 
-  @ManyToOne(() => Member)
+  @Column({ type: 'varchar' })
+  type: AuthFederateEnum;
+
+  @ManyToOne(() => Member, {
+    onDelete: 'CASCADE',
+  })
   member: Member;
 }
