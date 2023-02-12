@@ -4,9 +4,9 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { Request } from 'express';
-import { DataSource, EntityManager, QueryRunner } from 'typeorm';
+import { DataSource, QueryRunner } from 'typeorm';
 import { catchError, Observable, tap } from 'rxjs';
+import { TransactionRequest } from '../type/transaction-manager.type';
 
 @Injectable()
 export class TransactionInterceptor implements NestInterceptor {
@@ -16,9 +16,7 @@ export class TransactionInterceptor implements NestInterceptor {
     context: ExecutionContext,
     next: CallHandler,
   ): Promise<Observable<any>> {
-    const request: Request & { entityManager: EntityManager } = context
-      .switchToHttp()
-      .getRequest();
+    const request: TransactionRequest = context.switchToHttp().getRequest();
 
     const queryRunner = await this.connect();
     this.setRequestProperty(request, queryRunner);
@@ -53,9 +51,9 @@ export class TransactionInterceptor implements NestInterceptor {
   }
 
   private setRequestProperty(
-    request: Request & { entityManager: EntityManager },
+    request: TransactionRequest,
     queryRunner: QueryRunner,
   ): void {
-    request.entityManager = queryRunner.manager;
+    request.transactionManager = queryRunner.manager;
   }
 }
