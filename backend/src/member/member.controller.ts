@@ -13,6 +13,9 @@ import { UpdateMemberDto } from './dto/update-member.dto';
 import { TransactionManagerParam } from '../common/decorator/transaction-manager.decorator';
 import { TransactionRoute } from '../common/decorator/transaction-route.decorator';
 import { TransactionManager } from '../common/type/transaction-manager.type';
+import { Auth } from '../auth/decorator/auth.decorator';
+import { CurrentUser } from '../auth/decorator/current-user.decorator';
+import { Member } from './entity/member.entity';
 
 @Controller('member')
 export class MemberController {
@@ -32,9 +35,10 @@ export class MemberController {
     return this.memberService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.memberService.findOne(id);
+  @Auth()
+  @Get('me')
+  me(@CurrentUser() member: Member) {
+    return member;
   }
 
   @Patch(':id')

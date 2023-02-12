@@ -25,8 +25,8 @@ export class AuthLocalController {
     @Res({
       passthrough: true,
     })
-    res: Response,
+    response: Response,
   ) {
-    this.authJwtCookieService.login(res, member);
+    this.authJwtCookieService.login(response, member);
   }
 }

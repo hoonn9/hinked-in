@@ -25,6 +25,14 @@ export class AuthJwtCookieService {
   }
 
   login(response: Response, member: Member): void {
+    this.setNewTokens(response, member);
+  }
+
+  refresh(response: Response, member: Member): void {
+    this.setNewTokens(response, member);
+  }
+
+  private setNewTokens(response: Response, member: Member): void {
     const jwtPayload = this.jwtGeneratorService.makeMemberPayload(member);
 
     this.cookieService.setCookie(
