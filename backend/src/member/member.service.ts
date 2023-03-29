@@ -1,60 +1,73 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateMemberBodyDto } from './dto/create-member-body.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
-import { EntityManager, Repository } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import { Member } from './entity/member.entity';
-import { InjectRepository } from '@nestjs/typeorm';
 import { CryptoService } from '../crypto/crypto.service';
+import { MemberQueryService } from './service/member-query.service';
+import { MemberAlreadyExistException } from './exception/member-already-exist.exception';
+import { FieldError } from '../common/error/field.error';
 
 @Injectable()
 export class MemberService {
   constructor(
     private readonly cryptoService: CryptoService,
-
-    @InjectRepository(Member)
-    private readonly memberRepository: Repository<Member>,
+    private readonly memberQueryService: MemberQueryService,
   ) {}
 
   async addMember(
     createMemberDto: CreateMemberBodyDto,
     manager: EntityManager,
   ): Promise<void> {
-    const entity = new Member();
+    await this.checkExistEmailOrFail(createMemberDto.email, manager);
 
-    entity.email = createMemberDto.email;
+    const hashedPassword = await this.createHashPassword(
+      createMemberDto.password,
+    );
 
-    if (createMemberDto.password) {
-      entity.password = await this.cryptoService.hashPassword(
-        createMemberDto.password,
-      );
-    }
-
-    await this.memberRepository.save(entity);
-  }
-
-  findAll() {
-    return `This action returns all member`;
-  }
-
-  async findOne(id: string) {
-    const member = await this.memberRepository.findOne({
-      where: {
-        id,
-      },
+    const member = Member.new({
+      email: createMemberDto.email,
+      password: hashedPassword,
+      firstName: createMemberDto.firstName,
+      lastName: createMemberDto.lastName,
     });
 
-    if (!member) {
-      throw new NotFoundException();
+    await manager.save(member);
+  }
+
+  async update(
+    id: string,
+    updateMemberDto: UpdateMemberDto,
+    manager: EntityManager,
+  ) {
+    const member = await this.memberQueryService.findOneOrFail(id, manager);
+
+    member.firstName = updateMemberDto.firstName;
+    member.lastName = updateMemberDto.lastName;
+
+    await manager.save(member);
+  }
+
+  async remove(id: string, manager: EntityManager) {
+    const member = await this.memberQueryService.findOneOrFail(id, manager);
+
+    await manager.softRemove(member);
+  }
+
+  private async checkExistEmailOrFail(email: string, manager: EntityManager) {
+    const existMember = await this.memberQueryService.findByEmail(
+      email,
+      manager,
+    );
+
+    if (existMember) {
+      throw new MemberAlreadyExistException([
+        new FieldError('email', email, '이미 사용 중인 이메일입니다.'),
+      ]);
     }
-
-    return member;
   }
 
-  update(id: number, updateMemberDto: UpdateMemberDto) {
-    return `This action updates a #${id} member`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} member`;
+  private async createHashPassword(password: string) {
+    return this.cryptoService.hashPassword(password);
   }
 }

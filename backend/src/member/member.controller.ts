@@ -6,34 +6,23 @@ import {
   Patch,
   Param,
   Delete,
+  UseFilters,
 } from '@nestjs/common';
 import { MemberService } from './member.service';
 import { CreateMemberBodyDto } from './dto/create-member-body.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
-import { TransactionManagerParam } from '../common/decorator/transaction-manager.decorator';
+import { TransactionContext } from '../common/decorator/transaction-manager.decorator';
 import { TransactionRoute } from '../common/decorator/transaction-route.decorator';
 import { TransactionManager } from '../common/type/transaction-manager.type';
 import { Auth } from '../auth/decorator/auth.decorator';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { Member } from './entity/member.entity';
+import { HttpExceptionFilter } from '../common/exception/exception-filter/http-exception-filter';
 
+@UseFilters(HttpExceptionFilter)
 @Controller('member')
 export class MemberController {
   constructor(private readonly memberService: MemberService) {}
-
-  @TransactionRoute()
-  @Post()
-  create(
-    @Body() createMemberBodyDto: CreateMemberBodyDto,
-    @TransactionManagerParam() manager: TransactionManager,
-  ) {
-    return this.memberService.addMember(createMemberBodyDto, manager);
-  }
-
-  @Get()
-  findAll() {
-    return this.memberService.findAll();
-  }
 
   @Auth()
   @Get('me')
@@ -41,13 +30,31 @@ export class MemberController {
     return member;
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMemberDto: UpdateMemberDto) {
-    return this.memberService.update(+id, updateMemberDto);
+  @TransactionRoute()
+  @Post()
+  create(
+    @Body() createMemberBodyDto: CreateMemberBodyDto,
+    @TransactionContext() manager: TransactionManager,
+  ) {
+    return this.memberService.addMember(createMemberBodyDto, manager);
   }
 
+  @TransactionRoute()
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updateMemberDto: UpdateMemberDto,
+    @TransactionContext() manager: TransactionManager,
+  ) {
+    return this.memberService.update(id, updateMemberDto, manager);
+  }
+
+  @TransactionRoute()
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.memberService.remove(+id);
+  remove(
+    @Param('id') id: string,
+    @TransactionContext() manager: TransactionManager,
+  ) {
+    return this.memberService.remove(id, manager);
   }
 }

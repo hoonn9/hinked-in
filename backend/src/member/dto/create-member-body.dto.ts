@@ -1,5 +1,5 @@
-import { IsEmail, IsOptional, IsString, Length } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsEmail, IsString, Length } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateMemberBodyDto {
   @ApiProperty({
@@ -9,11 +9,24 @@ export class CreateMemberBodyDto {
   @IsEmail()
   email: string;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     name: 'password',
   })
   @IsString()
-  @IsOptional()
   @Length(8)
-  password?: string;
+  password: string;
+
+  @ApiProperty({
+    name: 'lastName',
+  })
+  @IsString()
+  @Length(1, 30)
+  lastName: string;
+
+  @ApiProperty({
+    name: 'firstName',
+  })
+  @IsString()
+  @Length(1, 30)
+  firstName: string;
 }

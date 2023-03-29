@@ -1,6 +1,6 @@
 import { CreateDateColumn, DeleteDateColumn, UpdateDateColumn } from 'typeorm';
 
-export class DateColumnEntity {
+export abstract class DateColumnEntity {
   @CreateDateColumn({
     type: 'timestamp with time zone',
     name: 'create_date',
@@ -17,5 +17,5 @@ export class DateColumnEntity {
     type: 'timestamp with time zone',
     name: 'delete_date',
   })
-  deleteDate: Date | null;
+  deleteDate: Date | null = null;
 }
