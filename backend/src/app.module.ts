@@ -5,12 +5,14 @@ import { ConfigModule } from '@nestjs/config';
 import { MemberModule } from './member/member.module';
 import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
+import { validateConfig } from './config-validator';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env.local',
       isGlobal: true,
+      validate: validateConfig,
     }),
     DatabaseModule,
     AuthModule,
