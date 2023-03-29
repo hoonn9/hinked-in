@@ -6,6 +6,7 @@ import { Member } from '../../../src/member/entity/member.entity';
 import { Repository } from 'typeorm';
 import { MockCryptoModule } from '../../lib/mock/mock-crypto.module';
 import { CryptoService } from '../../../src/crypto/crypto.service';
+import { mockEntityManager } from '../../lib/mock/mock-typeorm';
 
 class MockMemberRepository {
   save(): Promise<void> {
@@ -43,10 +44,13 @@ describe('MemberService', () => {
         .spyOn(memberRepository, 'save')
         .mockResolvedValueOnce(new Member());
 
-      await memberService.addMember({
-        password: plainPassword,
-        email: faker.internet.email(),
-      });
+      await memberService.addMember(
+        {
+          password: plainPassword,
+          email: faker.internet.email(),
+        },
+        mockEntityManager(),
+      );
 
       expect(saveFn.mock.calls[0][0].password).not.toEqual(plainPassword);
 
@@ -62,9 +66,12 @@ describe('MemberService', () => {
   it('input의 password가 없을 경우 entity의 password는 undefined가 되어야 한다.', async () => {
     const saveFn = jest.spyOn(memberRepository, 'save');
 
-    await memberService.addMember({
-      email: faker.internet.email(),
-    });
+    await memberService.addMember(
+      {
+        email: faker.internet.email(),
+      },
+      mockEntityManager(),
+    );
 
     expect(saveFn.mock.calls[0][0].password).toEqual(undefined);
   });

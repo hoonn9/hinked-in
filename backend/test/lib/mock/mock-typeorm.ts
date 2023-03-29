@@ -1,4 +1,5 @@
-import { ColumnOptions } from 'typeorm';
+import { ColumnOptions, EntityManager } from 'typeorm';
+import { mockAllFields } from './util';
 
 export const MockTypeormDateColumns = () => {
   jest.mock('typeorm', () => {
@@ -21,3 +22,5 @@ export const MockTypeormDateColumns = () => {
     };
   });
 };
+
+export const mockEntityManager = () => mockAllFields(EntityManager);
