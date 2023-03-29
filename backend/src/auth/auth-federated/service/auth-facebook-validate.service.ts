@@ -10,10 +10,14 @@ export class AuthFacebookValidateService extends AuthFederatedValidateService {
     super();
   }
 
-  async validate(accessToken: string, refreshToken: string, profile: Profile) {
+  async validate(profile: Profile) {
     return this.authFederateService.validate(AuthFederateEnum.FACEBOOK, {
       profileId: profile.id,
       email: this.getEmailByProfile(profile),
+      name: {
+        lastName: profile.name?.familyName,
+        firstName: profile.name?.givenName,
+      },
     });
   }
 }

@@ -11,14 +11,14 @@ export class AuthGoogleValidateService extends AuthFederatedValidateService {
     super();
   }
 
-  async validate(
-    accessToken: string,
-    refreshToken: string,
-    profile: Profile,
-  ): Promise<Member> {
+  async validate(profile: Profile): Promise<Member> {
     return this.authFederateService.validate(AuthFederateEnum.GOOGLE, {
       profileId: profile.id,
       email: this.getEmailByProfile(profile),
+      name: {
+        lastName: profile.name?.familyName,
+        firstName: profile.name?.givenName,
+      },
     });
   }
 }

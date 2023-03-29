@@ -25,10 +25,6 @@ export class AuthFacebookStrategy extends PassportStrategy(Strategy) {
     refreshToken: string,
     profile: Profile,
   ): Promise<Member> {
-    return this.authFacebookValidateService.validate(
-      accessToken,
-      refreshToken,
-      profile,
-    );
+    return this.authFacebookValidateService.validate(profile);
   }
 }
