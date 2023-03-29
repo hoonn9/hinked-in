@@ -1,23 +1,23 @@
 import { Test } from '@nestjs/testing';
 import { MemberService } from '../../../src/member/member.service';
 import { faker } from '@faker-js/faker';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { Member } from '../../../src/member/entity/member.entity';
-import { Repository } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import { MockCryptoModule } from '../../lib/mock/mock-crypto.module';
 import { CryptoService } from '../../../src/crypto/crypto.service';
 import { mockEntityManager } from '../../lib/mock/mock-typeorm';
+import { MemberQueryService } from '../../../src/member/service/member-query.service';
+import { MemberAlreadyExistException } from '../../../src/member/exception/member-already-exist.exception';
 
-class MockMemberRepository {
-  save(): Promise<void> {
-    return Promise.resolve();
-  }
-}
+const mockMemberQueryService = {
+  findByEmail: jest.fn(),
+  findOneOrFail: jest.fn(),
+};
 
 describe('MemberService', () => {
   let memberService: MemberService;
   let cryptoService: CryptoService;
-  let memberRepository: Repository<Member>;
+  let memberQueryService: MemberQueryService;
 
   beforeEach(async () => {
     const app = await Test.createTestingModule({
@@ -25,54 +25,83 @@ describe('MemberService', () => {
       providers: [
         MemberService,
         {
-          provide: getRepositoryToken(Member),
-          useClass: MockMemberRepository,
+          provide: MemberQueryService,
+          useValue: mockMemberQueryService,
         },
       ],
     }).compile();
 
     memberService = app.get(MemberService);
     cryptoService = app.get(CryptoService);
-    memberRepository = app.get(getRepositoryToken(Member));
+    memberQueryService = app.get(MemberQueryService);
   });
 
   describe('addMember', () => {
-    it('input의 password은 해싱되어 entity에 적용되어야 한다.', async () => {
-      const plainPassword = faker.internet.password();
+    it('성공 케이스', async () => {
+      // Given
+      const createMemberDto = {
+        password: faker.internet.password(),
+        email: faker.internet.email(),
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+      };
 
-      const saveFn = jest
-        .spyOn(memberRepository, 'save')
-        .mockResolvedValueOnce(new Member());
+      const em = {
+        save: async (member: Member) => member,
+      };
 
-      await memberService.addMember(
-        {
-          password: plainPassword,
-          email: faker.internet.email(),
-        },
-        mockEntityManager(),
+      const findByEmailFn = jest
+        .spyOn(memberQueryService, 'findByEmail')
+        .mockResolvedValueOnce(null);
+      const saveFn = jest.spyOn(em, 'save').mockResolvedValueOnce(new Member());
+
+      // When
+      await memberService.addMember(createMemberDto, em as EntityManager);
+
+      // Then
+      expect(findByEmailFn.mock.calls[0][0]).toEqual(createMemberDto.email);
+      expect(findByEmailFn.mock.calls[0][1]).toEqual(em);
+      expect(saveFn.mock.calls[0][0].email).toEqual(createMemberDto.email);
+      expect(saveFn.mock.calls[0][0].firstName).toEqual(
+        createMemberDto.firstName,
+      );
+      expect(saveFn.mock.calls[0][0].lastName).toEqual(
+        createMemberDto.lastName,
       );
 
-      expect(saveFn.mock.calls[0][0].password).not.toEqual(plainPassword);
-
+      // hash password
+      expect(saveFn.mock.calls[0][0].password).not.toEqual(
+        createMemberDto.password,
+      );
       await expect(
         cryptoService.comparePassword(
-          plainPassword,
+          createMemberDto.password,
           saveFn.mock.calls[0][0].password!,
         ),
       ).resolves.toEqual(true);
     });
-  });
 
-  it('input의 password가 없을 경우 entity의 password는 undefined가 되어야 한다.', async () => {
-    const saveFn = jest.spyOn(memberRepository, 'save');
+    it('이미 존재하는 유저의 정보로 가입시 MemberAlreadyExistsException을 발생시킨다.', async () => {
+      // Given
+      const findByEmailFn = jest
+        .spyOn(memberQueryService, 'findByEmail')
+        .mockResolvedValueOnce(new Member());
 
-    await memberService.addMember(
-      {
-        email: faker.internet.email(),
-      },
-      mockEntityManager(),
-    );
+      // When
+      // Then
+      await expect(
+        memberService.addMember(
+          {
+            password: faker.internet.password(),
+            email: faker.internet.email(),
+            firstName: faker.name.firstName(),
+            lastName: faker.name.lastName(),
+          },
+          mockEntityManager(),
+        ),
+      ).rejects.toThrow(MemberAlreadyExistException);
 
-    expect(saveFn.mock.calls[0][0].password).toEqual(undefined);
+      expect(findByEmailFn).toHaveBeenCalled();
+    });
   });
 });

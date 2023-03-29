@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { AuthLocalGuard } from '../../../../src/auth/auth-local/guard/auth-local.guard';
-import { ValidationException } from '../../../../src/common/exception/validation-exception';
+import { InvalidInputException } from '../../../../src/common/exception/custom-excpetion/invalid-input-exception';
 import { faker } from '@faker-js/faker';
 import { mockExecutionContextRequestBody } from '../../../lib/execution-context';
 
@@ -37,11 +37,11 @@ describe('AuthLocalGuard', () => {
       password: faker.internet.password(),
     },
   ])(
-    'Request Body에 Email, Password 중 값이 하나라도 없는 경우 BadRequestException을 반환한다',
+    'Request Body에 Email, Password 중 값이 하나라도 없는 경우 ValidationException를 발생시킨다',
     (body) => {
       return expect(
         authLocalGuard.canActivate(mockExecutionContextRequestBody(body)),
-      ).rejects.toBeInstanceOf(ValidationException);
+      ).rejects.toBeInstanceOf(InvalidInputException);
     },
   );
 });
