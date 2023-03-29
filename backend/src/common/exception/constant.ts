@@ -1,6 +1,14 @@
 import { HttpStatus } from '@nestjs/common';
 
 export const EXCEPTION_RESPONSE = {
+  // Common
+  InvalidInputValue: {
+    statusCode: HttpStatus.BAD_REQUEST,
+    code: 'C001',
+    message: '올바르지 않은 요청입니다.',
+  },
+
+  // Member
   MemberNotExist: {
     statusCode: HttpStatus.NOT_FOUND,
     code: 'M001',
