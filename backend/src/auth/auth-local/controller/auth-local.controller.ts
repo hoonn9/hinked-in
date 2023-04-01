@@ -4,7 +4,7 @@ import { ApiImplicitBody } from '@nestjs/swagger/dist/decorators/api-implicit-bo
 import { AuthLocalBodyDto } from '../dto/auth-local.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../../decorator/current-user.decorator';
-import { Member } from '../../../member/entity/member.entity';
+import { MemberEntity } from '../../../member/entity/member.entity';
 import { Response } from 'express';
 import { AuthJwtCookieService } from '../../jwt/service/auth-jwt-cookie.service';
 
@@ -21,7 +21,7 @@ export class AuthLocalController {
   @UseGuards(AuthLocalGuard)
   @Post('login')
   async login(
-    @CurrentUser() member: Member,
+    @CurrentUser() member: MemberEntity,
     @Res({
       passthrough: true,
     })

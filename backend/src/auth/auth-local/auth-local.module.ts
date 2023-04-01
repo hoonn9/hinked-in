@@ -4,11 +4,15 @@ import { AuthLocalController } from './controller/auth-local.controller';
 import { AuthLocalValidateService } from './service/auth-local-validate.service';
 import { CryptoModule } from '../../crypto/crypto.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Member } from '../../member/entity/member.entity';
+import { MemberEntity } from '../../member/entity/member.entity';
 import { AuthJwtModule } from '../jwt/auth-jwt.module';
 
 @Module({
-  imports: [AuthJwtModule, CryptoModule, TypeOrmModule.forFeature([Member])],
+  imports: [
+    AuthJwtModule,
+    CryptoModule,
+    TypeOrmModule.forFeature([MemberEntity]),
+  ],
   controllers: [AuthLocalController],
   providers: [AuthLocalValidateService, AuthLocalStrategy],
 })

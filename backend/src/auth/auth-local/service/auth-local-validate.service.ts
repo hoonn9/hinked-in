@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Member } from '../../../member/entity/member.entity';
+import { MemberEntity } from '../../../member/entity/member.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CryptoService } from '../../../crypto/crypto.service';
 import { AUTH_EXCEPTION_MESSAGES } from '../../constant/auth-exception-message';
@@ -14,11 +14,14 @@ export class AuthLocalValidateService {
   constructor(
     private readonly cryptoService: CryptoService,
 
-    @InjectRepository(Member)
-    private readonly memberRepository: Repository<Member>,
+    @InjectRepository(MemberEntity)
+    private readonly memberRepository: Repository<MemberEntity>,
   ) {}
 
-  async validateMember(email: string, passwordInput: string): Promise<Member> {
+  async validateMember(
+    email: string,
+    passwordInput: string,
+  ): Promise<MemberEntity> {
     const member = await this.memberRepository.findOne({
       where: {
         email,
@@ -33,9 +36,9 @@ export class AuthLocalValidateService {
   }
 
   private async localLogin(
-    member: Member,
+    member: MemberEntity,
     passwordInput: string,
-  ): Promise<Member> {
+  ): Promise<MemberEntity> {
     if (!this.hasPasswordMember(member)) {
       throw this.loginFailException;
     }
@@ -48,15 +51,15 @@ export class AuthLocalValidateService {
   }
 
   private async comparePassword(
-    member: Member & { password: string },
+    member: MemberEntity & { password: string },
     passwordInput: string,
   ): Promise<boolean> {
     return this.cryptoService.comparePassword(passwordInput, member.password);
   }
 
   private hasPasswordMember(
-    member: Member,
-  ): member is Member & { password: string } {
+    member: MemberEntity,
+  ): member is MemberEntity & { password: string } {
     return member.password != null;
   }
 }

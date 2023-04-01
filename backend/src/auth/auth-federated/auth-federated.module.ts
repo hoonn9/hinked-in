@@ -6,8 +6,8 @@ import { AuthFederateEnum } from './enum/auth-federate.enum';
 import { AuthGoogleValidateService } from './service/auth-google-validate.service';
 import { AuthFederatedService } from './service/auth-federated.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { FederatedCredential } from './entity/federated-credential.entity';
-import { Member } from '../../member/entity/member.entity';
+import { FederatedCredentialEntity } from './entity/federated-credential.entity';
+import { MemberEntity } from '../../member/entity/member.entity';
 import { AuthFacebookController } from './controller/auth-facebook.controller';
 import { AuthGoogleController } from './controller/auth-google.controller';
 import { AuthJwtModule } from '../jwt/auth-jwt.module';
@@ -22,7 +22,7 @@ const federationProviders = Object.values(federationServices).flat();
 @Module({
   imports: [
     AuthJwtModule,
-    TypeOrmModule.forFeature([FederatedCredential, Member]),
+    TypeOrmModule.forFeature([FederatedCredentialEntity, MemberEntity]),
   ],
   controllers: [AuthFacebookController, AuthGoogleController],
   providers: [AuthFederatedService, ...federationProviders],

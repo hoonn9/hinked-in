@@ -3,22 +3,34 @@ import { DateColumnEntity } from '../../common/entity/date-column.entity';
 import { MemberConstructorParams } from '../typing/member.type';
 import { genUUID } from '../../common/lib/uuid';
 
-@Entity()
-export class Member extends DateColumnEntity {
+@Entity({
+  name: 'member',
+})
+export class MemberEntity extends DateColumnEntity {
   @PrimaryGeneratedColumn('uuid', {
-    name: 'member_id',
-    primaryKeyConstraintName: 'pk_member',
+    name: 'id',
+    primaryKeyConstraintName: 'member_pkey',
   })
   readonly id: string = genUUID();
 
-  @Index('idx_member_email', { unique: true })
+  @Index('member_ix_email', { unique: true })
   @Column({ type: 'varchar', name: 'email', length: 320 })
   email: string;
 
-  @Column({ type: 'varchar', name: 'last_name', length: 30, nullable: true })
+  @Column({
+    type: 'varchar',
+    name: 'last_name',
+    length: 30,
+    nullable: true,
+  })
   lastName: string | null;
 
-  @Column({ type: 'varchar', name: 'first_name', length: 30, nullable: true })
+  @Column({
+    type: 'varchar',
+    name: 'first_name',
+    length: 30,
+    nullable: true,
+  })
   firstName: string | null;
 
   @Column({ type: 'varchar', name: 'password', nullable: true })
@@ -33,7 +45,7 @@ export class Member extends DateColumnEntity {
   phoneNumber: string | null;
 
   static new(params: MemberConstructorParams) {
-    const member = new Member();
+    const member = new MemberEntity();
 
     member.email = params.email;
     member.lastName = params.lastName || null;

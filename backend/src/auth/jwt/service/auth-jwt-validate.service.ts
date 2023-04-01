@@ -1,17 +1,17 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { Member } from '../../../member/entity/member.entity';
+import { MemberEntity } from '../../../member/entity/member.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtPayload } from '../type/auth-jwt.type';
 
 @Injectable()
 export class AuthJwtValidateService {
   constructor(
-    @InjectRepository(Member)
-    private readonly memberRepository: Repository<Member>,
+    @InjectRepository(MemberEntity)
+    private readonly memberRepository: Repository<MemberEntity>,
   ) {}
 
-  async validate(payload: JwtPayload): Promise<Member> {
+  async validate(payload: JwtPayload): Promise<MemberEntity> {
     const member = await this.memberRepository.findOne({
       where: {
         id: payload.id,

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateMemberBodyDto } from './dto/create-member-body.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { EntityManager } from 'typeorm';
-import { Member } from './entity/member.entity';
+import { MemberEntity } from './entity/member.entity';
 import { CryptoService } from '../crypto/crypto.service';
 import { MemberQueryService } from './service/member-query.service';
 import { MemberAlreadyExistException } from './exception/member-already-exist.exception';
@@ -25,7 +25,7 @@ export class MemberService {
       createMemberDto.password,
     );
 
-    const member = Member.new({
+    const member = MemberEntity.new({
       email: createMemberDto.email,
       password: hashedPassword,
       firstName: createMemberDto.firstName,

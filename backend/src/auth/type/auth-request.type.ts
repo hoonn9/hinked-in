@@ -1,5 +1,5 @@
-import { Member } from '../../member/entity/member.entity';
+import { MemberEntity } from '../../member/entity/member.entity';
 
 export type AuthRequest = Express.Request & {
-  user?: Member;
+  user?: MemberEntity;
 };

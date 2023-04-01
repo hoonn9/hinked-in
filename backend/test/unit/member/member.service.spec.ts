@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { MemberService } from '../../../src/member/member.service';
 import { faker } from '@faker-js/faker';
-import { Member } from '../../../src/member/entity/member.entity';
+import { MemberEntity } from '../../../src/member/entity/member.entity';
 import { EntityManager } from 'typeorm';
 import { MockCryptoModule } from '../../lib/mock/mock-crypto.module';
 import { CryptoService } from '../../../src/crypto/crypto.service';
@@ -47,13 +47,15 @@ describe('MemberService', () => {
       };
 
       const em = {
-        save: async (member: Member) => member,
+        save: async (member: MemberEntity) => member,
       };
 
       const findByEmailFn = jest
         .spyOn(memberQueryService, 'findByEmail')
         .mockResolvedValueOnce(null);
-      const saveFn = jest.spyOn(em, 'save').mockResolvedValueOnce(new Member());
+      const saveFn = jest
+        .spyOn(em, 'save')
+        .mockResolvedValueOnce(new MemberEntity());
 
       // When
       await memberService.addMember(createMemberDto, em as EntityManager);
@@ -85,7 +87,7 @@ describe('MemberService', () => {
       // Given
       const findByEmailFn = jest
         .spyOn(memberQueryService, 'findByEmail')
-        .mockResolvedValueOnce(new Member());
+        .mockResolvedValueOnce(new MemberEntity());
 
       // When
       // Then

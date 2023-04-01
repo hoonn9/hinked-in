@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtPayload } from '../type/auth-jwt.type';
 import { ConfigService } from '@nestjs/config';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
-import { Member } from '../../../member/entity/member.entity';
+import { MemberEntity } from '../../../member/entity/member.entity';
 
 @Injectable()
 export class AuthJwtGeneratorService {
@@ -42,7 +42,7 @@ export class AuthJwtGeneratorService {
     });
   }
 
-  makeMemberPayload(member: Member): JwtPayload {
+  makeMemberPayload(member: MemberEntity): JwtPayload {
     return {
       id: member.id,
     };

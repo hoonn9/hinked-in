@@ -6,14 +6,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtRefreshStrategy } from './strategy/auth-refresh.strategy';
 import { AuthJwtValidateService } from './service/auth-jwt-validate.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Member } from '../../member/entity/member.entity';
+import { MemberEntity } from '../../member/entity/member.entity';
 import { AuthJwtController } from './controller/auth-jwt.controller';
 import { JwtAccessStrategy } from './strategy/auth-access.strategy';
 
 const strategies = [JwtRefreshStrategy, JwtAccessStrategy];
 
 @Module({
-  imports: [JwtModule, TypeOrmModule.forFeature([Member])],
+  imports: [JwtModule, TypeOrmModule.forFeature([MemberEntity])],
   controllers: [AuthJwtController],
   providers: [
     AuthJwtCookieService,

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthJwtGeneratorService } from './auth-jwt-generator.service';
-import { Member } from '../../../member/entity/member.entity';
+import { MemberEntity } from '../../../member/entity/member.entity';
 import { CookieService } from '../../../common/service/cookie.service';
 import { Response } from 'express';
 
@@ -24,15 +24,15 @@ export class AuthJwtCookieService {
     );
   }
 
-  login(response: Response, member: Member): void {
+  login(response: Response, member: MemberEntity): void {
     this.setNewTokens(response, member);
   }
 
-  refresh(response: Response, member: Member): void {
+  refresh(response: Response, member: MemberEntity): void {
     this.setNewTokens(response, member);
   }
 
-  private setNewTokens(response: Response, member: Member): void {
+  private setNewTokens(response: Response, member: MemberEntity): void {
     const jwtPayload = this.jwtGeneratorService.makeMemberPayload(member);
 
     this.cookieService.setCookie(

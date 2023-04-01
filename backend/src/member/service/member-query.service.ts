@@ -1,15 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Member } from '../entity/member.entity';
+import { MemberEntity } from '../entity/member.entity';
 import { EntityManager, Repository } from 'typeorm';
 import { CoreQueryService } from '../../common/service/core-query.service';
 import { MemberNotExistException } from '../exception/member-not-exist.exception';
 
 @Injectable()
-export class MemberQueryService extends CoreQueryService<Member> {
+export class MemberQueryService extends CoreQueryService<MemberEntity> {
   constructor(
-    @InjectRepository(Member)
-    private readonly memberRepository: Repository<Member>,
+    @InjectRepository(MemberEntity)
+    private readonly memberRepository: Repository<MemberEntity>,
   ) {
     super(memberRepository);
   }

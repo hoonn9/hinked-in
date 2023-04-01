@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AuthFederatedService } from './auth-federated.service';
-import { Member } from '../../../member/entity/member.entity';
+import { MemberEntity } from '../../../member/entity/member.entity';
 import { Profile } from 'passport-google-oauth20';
 import { AuthFederateEnum } from '../enum/auth-federate.enum';
 import { AuthFederatedValidateService } from './auth-federated-validate.abstract';
@@ -11,7 +11,7 @@ export class AuthGoogleValidateService extends AuthFederatedValidateService {
     super();
   }
 
-  async validate(profile: Profile): Promise<Member> {
+  async validate(profile: Profile): Promise<MemberEntity> {
     return this.authFederateService.validate(AuthFederateEnum.GOOGLE, {
       profileId: profile.id,
       email: this.getEmailByProfile(profile),

@@ -16,7 +16,7 @@ import { TransactionRoute } from '../common/decorator/transaction-route.decorato
 import { TransactionManager } from '../common/type/transaction-manager.type';
 import { Auth } from '../auth/decorator/auth.decorator';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
-import { Member } from './entity/member.entity';
+import { MemberEntity } from './entity/member.entity';
 import { HttpExceptionFilter } from '../common/exception/exception-filter/http-exception-filter';
 
 @UseFilters(HttpExceptionFilter)
@@ -26,7 +26,7 @@ export class MemberController {
 
   @Auth()
   @Get('me')
-  me(@CurrentUser() member: Member) {
+  me(@CurrentUser() member: MemberEntity) {
     return member;
   }
 

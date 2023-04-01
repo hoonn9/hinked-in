@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FederatedCredential } from '../entity/federated-credential.entity';
+import { FederatedCredentialEntity } from '../entity/federated-credential.entity';
 import { DataSource, EntityManager, Repository } from 'typeorm';
-import { Member } from '../../../member/entity/member.entity';
+import { MemberEntity } from '../../../member/entity/member.entity';
 import { AuthFederateProfile } from '../interface/auth-federate.interface';
 import { AuthFederateEnum } from '../enum/auth-federate.enum';
 
 @Injectable()
 export class AuthFederatedService {
   constructor(
-    @InjectRepository(FederatedCredential)
-    private readonly federatedCredentialRepository: Repository<FederatedCredential>,
+    @InjectRepository(FederatedCredentialEntity)
+    private readonly federatedCredentialRepository: Repository<FederatedCredentialEntity>,
 
-    @InjectRepository(Member)
-    private readonly memberRepository: Repository<Member>,
+    @InjectRepository(MemberEntity)
+    private readonly memberRepository: Repository<MemberEntity>,
 
     private readonly dataSource: DataSource,
   ) {}
@@ -21,15 +21,18 @@ export class AuthFederatedService {
   async validate(
     type: AuthFederateEnum,
     profile: AuthFederateProfile,
-  ): Promise<Member> {
+  ): Promise<MemberEntity> {
     return this.dataSource.transaction(async (manager) => {
-      const federatedCredential = await manager.findOne(FederatedCredential, {
-        where: {
-          profileId: profile.profileId,
-          type,
+      const federatedCredential = await manager.findOne(
+        FederatedCredentialEntity,
+        {
+          where: {
+            profileId: profile.profileId,
+            type,
+          },
+          relations: ['member'],
         },
-        relations: ['member'],
-      });
+      );
 
       if (federatedCredential) {
         return federatedCredential.member;
@@ -43,7 +46,7 @@ export class AuthFederatedService {
     type: AuthFederateEnum,
     profile: AuthFederateProfile,
     manager: EntityManager,
-  ): Promise<Member> {
+  ): Promise<MemberEntity> {
     const member = await this.addMember(profile, manager);
     await this.addFederatedCredential(type, profile, member, manager);
     return member;
@@ -52,10 +55,10 @@ export class AuthFederatedService {
   private async addFederatedCredential(
     type: AuthFederateEnum,
     profile: AuthFederateProfile,
-    member: Member,
+    member: MemberEntity,
     manager: EntityManager,
   ): Promise<void> {
-    const federatedCredential = new FederatedCredential();
+    const federatedCredential = new FederatedCredentialEntity();
     federatedCredential.type = type;
     federatedCredential.profileId = profile.profileId;
     federatedCredential.member = member;
@@ -66,8 +69,8 @@ export class AuthFederatedService {
   private async addMember(
     profile: AuthFederateProfile,
     manager: EntityManager,
-  ): Promise<Member> {
-    const member = Member.new({
+  ): Promise<MemberEntity> {
+    const member = MemberEntity.new({
       email: profile.email,
       firstName: profile.name.firstName,
       lastName: profile.name.lastName,

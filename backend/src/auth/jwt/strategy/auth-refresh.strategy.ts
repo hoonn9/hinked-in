@@ -4,7 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from '../type/auth-jwt.type';
 import { AuthJwtValidateService } from '../service/auth-jwt-validate.service';
-import { Member } from '../../../member/entity/member.entity';
+import { MemberEntity } from '../../../member/entity/member.entity';
 
 const strategyName = 'AUTH_REFRESH';
 
@@ -31,7 +31,7 @@ export class JwtRefreshStrategy extends PassportStrategy(
     });
   }
 
-  async validate(payload: JwtPayload): Promise<Member> {
+  async validate(payload: JwtPayload): Promise<MemberEntity> {
     return this.authJwtValidateService.validate(payload);
   }
 }
