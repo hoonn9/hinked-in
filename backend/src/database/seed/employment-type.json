@@ -1,0 +1,10 @@
+[
+  { "name": "Full-time" },
+  { "name": "Part-time" },
+  { "name": "Self-employed" },
+  { "name": "Freelance" },
+  { "name": "Contract" },
+  { "name": "Internship" },
+  { "name": "Apprenticeship" },
+  { "name": "Seasonal" }
+]
