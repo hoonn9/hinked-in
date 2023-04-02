@@ -1,18 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { SeederService } from '../seeder-abstract.service';
+import { SeederService } from '../seeder.abstract.service';
 import { EmploymentTypeEntity } from '../../employment-type/entity/employment-type.entity';
 import { EntityManager } from 'typeorm';
-import * as fs from 'fs/promises';
 import * as path from 'path';
-import { plainToInstance } from 'class-transformer';
-import { EmploymentTypeSeed } from '../validator/employment-type-seed.validator';
-import { validateOrReject } from 'class-validator';
+import { EmploymentTypeSeed } from '../../database/seed/type/employment-type.seed';
+import { parseArrayByJSONFile } from '../../common/lib/parse';
 
 @Injectable()
 export class EmploymentTypeSeedService extends SeederService {
   private readonly filePath = path.join(
     __dirname,
-    '../../database/seed',
+    '../../database/seed/resource',
     'employment-type.json',
   );
 
@@ -21,23 +19,9 @@ export class EmploymentTypeSeedService extends SeederService {
   }
 
   async run(manager: EntityManager): Promise<void> {
-    const fileTextRaw = await fs.readFile(this.filePath, 'utf-8');
+    const seeds = await parseArrayByJSONFile(EmploymentTypeSeed, this.filePath);
 
-    const parsedRaw = JSON.parse(fileTextRaw);
-
-    if (!Array.isArray(parsedRaw)) {
-      throw new Error();
-    }
-
-    const result = parsedRaw.map((raw) => {
-      const instance = plainToInstance(EmploymentTypeSeed, raw);
-      validateOrReject(instance, {
-        whitelist: true,
-      });
-      return instance;
-    });
-
-    await manager.upsert(EmploymentTypeEntity, result, {
+    await manager.upsert(EmploymentTypeEntity, seeds, {
       conflictPaths: ['name'],
     });
   }

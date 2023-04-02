@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { DiscoveryService, MetadataScanner } from '@nestjs/core';
-import { SeederService } from './seeder-abstract.service';
+import { SeederService } from './seeder.abstract.service';
 
 @Injectable()
 export class SeederExecutionService {
