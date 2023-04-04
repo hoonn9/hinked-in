@@ -1,21 +1,20 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { DiscoveryService, MetadataScanner } from '@nestjs/core';
+import { DiscoveryService } from '@nestjs/core';
 import { SeederService } from './seeder.abstract.service';
+import { TransactionService } from '../common/service/transaction.service';
 
 @Injectable()
-export class SeederExecutionService {
+export class SeederExecutionService extends TransactionService {
   constructor(
     private readonly discoveryService: DiscoveryService,
-    private readonly metadataScanner: MetadataScanner,
-    @Inject(DataSource)
-    private readonly dataSource: DataSource,
-  ) {}
+    protected readonly dataSource: DataSource,
+  ) {
+    super(dataSource);
+  }
 
   async execute() {
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
+    const queryRunner = await this.connectTransaction();
 
     try {
       await Promise.all(
@@ -23,12 +22,10 @@ export class SeederExecutionService {
           return service.run(queryRunner.manager);
         }),
       );
-      await queryRunner.commitTransaction();
+
+      await this.commit(queryRunner);
     } catch (e) {
-      console.error(e);
-      await queryRunner.rollbackTransaction();
-    } finally {
-      await queryRunner.release();
+      await this.rollback(queryRunner);
     }
   }
 
