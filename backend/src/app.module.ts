@@ -6,6 +6,7 @@ import { MemberModule } from './member/member.module';
 import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { validateConfig } from './config-validator';
+import { ExperienceModule } from './experience/experience.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { validateConfig } from './config-validator';
     DatabaseModule,
     AuthModule,
     MemberModule,
+    ExperienceModule,
   ],
   controllers: [AppController],
   providers: [AppService],
