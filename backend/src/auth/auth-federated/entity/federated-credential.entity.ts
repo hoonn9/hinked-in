@@ -34,7 +34,7 @@ export class FederatedCredentialEntity {
     referencedColumnName: 'id',
     foreignKeyConstraintName: 'federated_credential_member_id_fkey',
   })
-  member: MemberEntity;
+  member: MemberEntity | null;
 
   @Index('federated_credential_ix_member_id')
   @RelationId((entity: FederatedCredentialEntity) => entity.member)

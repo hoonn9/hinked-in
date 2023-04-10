@@ -34,7 +34,7 @@ export class AuthFederatedService {
         },
       );
 
-      if (federatedCredential) {
+      if (federatedCredential?.member) {
         return federatedCredential.member;
       }
 
