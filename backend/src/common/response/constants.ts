@@ -1,0 +1,1 @@
+export const HTTP_RESPONSE_SUCCESS_CODE = 'C000';
