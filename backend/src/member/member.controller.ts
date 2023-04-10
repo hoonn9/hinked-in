@@ -9,8 +9,8 @@ import {
   UseFilters,
 } from '@nestjs/common';
 import { MemberService } from './member.service';
-import { CreateMemberBodyDto } from './dto/create-member-body.dto';
-import { UpdateMemberDto } from './dto/update-member.dto';
+import { CreateMemberBodyDto } from './dto/create-member.dto';
+import { UpdateMemberBodyDto } from './dto/update-member.dto';
 import { TransactionContext } from '../common/decorator/transaction-manager.decorator';
 import { TransactionRoute } from '../common/decorator/transaction-route.decorator';
 import { TransactionManager } from '../common/type/transaction-manager.type';
@@ -43,7 +43,7 @@ export class MemberController {
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() updateMemberDto: UpdateMemberDto,
+    @Body() updateMemberDto: UpdateMemberBodyDto,
     @TransactionContext() manager: TransactionManager,
   ) {
     return this.memberService.update(id, updateMemberDto, manager);
