@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMemberBodyDto } from './dto/create-member-body.dto';
-import { UpdateMemberDto } from './dto/update-member.dto';
+import { CreateMemberBodyDto } from './dto/create-member.dto';
+import { UpdateMemberBodyDto } from './dto/update-member.dto';
 import { EntityManager } from 'typeorm';
 import { MemberEntity } from './entity/member.entity';
 import { CryptoService } from '../crypto/crypto.service';
@@ -37,7 +37,7 @@ export class MemberService {
 
   async update(
     id: string,
-    updateMemberDto: UpdateMemberDto,
+    updateMemberDto: UpdateMemberBodyDto,
     manager: EntityManager,
   ) {
     const member = await this.memberQueryService.findOneOrFail(id, manager);

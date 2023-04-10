@@ -1,7 +1,7 @@
 import { OmitType } from '@nestjs/swagger';
-import { CreateMemberBodyDto } from './create-member-body.dto';
+import { CreateMemberBodyDto } from './create-member.dto';
 
-export class UpdateMemberDto extends OmitType(CreateMemberBodyDto, [
+export class UpdateMemberBodyDto extends OmitType(CreateMemberBodyDto, [
   'email',
   'password',
 ]) {}

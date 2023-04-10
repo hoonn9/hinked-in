@@ -1,7 +1,14 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { DateColumnEntity } from '../../common/entity/date-column.entity';
 import { MemberConstructorParams } from '../typing/member.type';
 import { genUUID } from '../../common/lib/uuid';
+import { ExperienceEntity } from '../../experience/entity/experience.entity';
 
 @Entity({
   name: 'member',
@@ -43,6 +50,9 @@ export class MemberEntity extends DateColumnEntity {
     nullable: true,
   })
   phoneNumber: string | null;
+
+  @OneToMany(() => ExperienceEntity, (experience) => experience.member)
+  experiences: ExperienceEntity[] | null;
 
   static new(params: MemberConstructorParams) {
     const member = new MemberEntity();

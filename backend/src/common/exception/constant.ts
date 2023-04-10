@@ -7,6 +7,11 @@ export const EXCEPTION_RESPONSE = {
     code: 'C001',
     message: '올바르지 않은 요청입니다.',
   },
+  EntityNotExist: {
+    statusCode: HttpStatus.NOT_FOUND,
+    code: 'C002',
+    message: '존재하지 않는 데이터입니다.',
+  },
 
   // Member
   MemberNotExist: {
