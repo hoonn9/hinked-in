@@ -1,8 +1,11 @@
 import { plainToInstance } from 'class-transformer';
-import { IsInt, IsString, validateSync } from 'class-validator';
+import { IsInt, IsOptional, IsString, validateSync } from 'class-validator';
 import { IsPortNumber } from './common/decorator/validate-decorator/is-port-number.decorator';
 
 class EnvironmentVariables {
+  @IsPortNumber()
+  PORT: number;
+
   @IsString()
   DATABASE_HOST: string;
 
@@ -50,6 +53,20 @@ class EnvironmentVariables {
 
   @IsString()
   JWT_REFRESH_TOKEN_NAME: string;
+
+  @IsString()
+  SWAGGER_API_PATH: string;
+
+  @IsString()
+  @IsOptional()
+  SWAGGER_API_TITLE?: string;
+
+  @IsString()
+  @IsOptional()
+  SWAGGER_API_DESCRIPTION?: string;
+
+  @IsString()
+  SWAGGER_API_VERSION: string;
 }
 
 export function validateConfig(config: Record<string, unknown>) {
