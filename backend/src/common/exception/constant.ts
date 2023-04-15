@@ -13,6 +13,13 @@ export const EXCEPTION_RESPONSE = {
     message: '존재하지 않는 데이터입니다.',
   },
 
+  // Auth
+  LoginFail: {
+    statusCode: HttpStatus.UNAUTHORIZED,
+    code: 'A001',
+    message: '사용자의 이메일 또는 비밀번호가 올바르지 않습니다.',
+  },
+
   // Member
   MemberNotExist: {
     statusCode: HttpStatus.NOT_FOUND,

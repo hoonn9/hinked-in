@@ -32,7 +32,7 @@ export class HttpExceptionResponseDto {
   @IsString()
   path: string;
 
-  @ApiPropertyOptional({ type: [] })
+  @ApiPropertyOptional({ type: [], isArray: true })
   @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => Error)

@@ -1,8 +1,9 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy as LocalStrategy } from 'passport-local';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UseFilters } from '@nestjs/common';
 import { AuthLocalValidateService } from '../service/auth-local-validate.service';
 import { MemberEntity } from '../../../member/entity/member.entity';
+import { HttpExceptionFilter } from '../../../common/exception/exception-filter/http-exception-filter';
 
 const strategyName = 'LOCAL';
 
@@ -22,6 +23,7 @@ export class AuthLocalStrategy extends PassportStrategy(
     });
   }
 
+  @UseFilters(HttpExceptionFilter)
   async validate(username: string, password: string): Promise<MemberEntity> {
     return this.authLocalValidateService.validateMember(username, password);
   }

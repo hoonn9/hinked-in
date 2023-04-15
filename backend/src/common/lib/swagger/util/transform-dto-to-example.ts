@@ -29,19 +29,16 @@ export const transformDTOToExample = <T>(
   generic?: Type<T>,
 ): T => {
   const result: Record<string, any> = {};
-  console.log(dtoClass, typeof dtoClass);
+
+  if (typeof dtoClass !== 'function') {
+    return result as T;
+  }
+
   const propertiesArray: string[] =
     Reflect.getMetadata(
       DECORATORS.API_MODEL_PROPERTIES_ARRAY,
       dtoClass.prototype,
     ) || [];
-
-  // console.log(
-  //   Reflect.getMetadata(
-  //     DECORATORS.API_MODEL_PROPERTIES_ARRAY,
-  //     dtoClass.prototype,
-  //   ),
-  // );
 
   const properties: ApiPropertyOptionsWithFieldName[] = propertiesArray.map(
     (field) => {

@@ -1,16 +1,12 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { MemberEntity } from '../../../member/entity/member.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CryptoService } from '../../../crypto/crypto.service';
-import { AUTH_EXCEPTION_MESSAGES } from '../../constant/auth-exception-message';
+import { LoginFailException } from '../exception/login-fail.exception';
 
 @Injectable()
 export class AuthLocalValidateService {
-  private readonly loginFailException = new UnauthorizedException(
-    AUTH_EXCEPTION_MESSAGES.loginFail,
-  );
-
   constructor(
     private readonly cryptoService: CryptoService,
 
@@ -29,7 +25,7 @@ export class AuthLocalValidateService {
     });
 
     if (member === null) {
-      throw this.loginFailException;
+      throw new LoginFailException();
     }
 
     return this.localLogin(member, passwordInput);
@@ -40,11 +36,11 @@ export class AuthLocalValidateService {
     passwordInput: string,
   ): Promise<MemberEntity> {
     if (!this.hasPasswordMember(member)) {
-      throw this.loginFailException;
+      throw new LoginFailException();
     }
 
     if (!(await this.comparePassword(member, passwordInput))) {
-      throw this.loginFailException;
+      throw new LoginFailException();
     }
 
     return member;

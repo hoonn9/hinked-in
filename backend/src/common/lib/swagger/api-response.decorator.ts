@@ -4,10 +4,10 @@ import { HttpExceptionResponseDto } from '../../exception/dto/http-exception-res
 import { ApiExtraModels, ApiResponse, getSchemaPath } from '@nestjs/swagger';
 
 interface CustomResponseOption {
-  model: Type<any>;
+  model?: Type<any>;
   exampleTitle: string;
   overwriteValue?: Record<string, any>;
-  exampleDescription: string;
+  exampleDescription?: string;
   generic?: Type<any>;
 }
 
@@ -19,7 +19,11 @@ export const ApiCustomExceptionResponse = (
   options.forEach((option) => {
     const responseExample = transformDTOToExample(HttpExceptionResponseDto);
 
-    responseExample.errors = transformDTOToExample(option.model);
+    if (option.model) {
+      responseExample.errors = [transformDTOToExample(option.model)];
+    } else {
+      responseExample.errors = undefined;
+    }
 
     examples[option.exampleTitle] = {
       value: responseExample,
@@ -27,7 +31,9 @@ export const ApiCustomExceptionResponse = (
     };
   });
 
-  const models = options.map((option) => option.model);
+  const models: Type<any>[] = options
+    .map((option) => option.model)
+    .filter((model): model is Type => model != null);
 
   return applyDecorators(
     ApiExtraModels(HttpExceptionResponseDto, ...models),
