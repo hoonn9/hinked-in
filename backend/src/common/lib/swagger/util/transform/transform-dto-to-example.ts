@@ -6,7 +6,10 @@ import {
   getExampleDefaultDescription,
   wrapArrayElement,
 } from './api-property';
-import { isLazyTypeFunc, isPrimitive } from './is';
+import {
+  isLazyTypeFuncApiPropertyType,
+  isPrimitiveApiPropertyType,
+} from './is';
 
 export const transformDTOToExample = <T>(
   classRef: Type<T>,
@@ -40,11 +43,13 @@ const getFieldExample = <T>(
     return wrapArrayElement(property, transformDTOToExample(generic));
   }
 
-  if (isPrimitive(propertyType)) {
+  if (isPrimitiveApiPropertyType(propertyType)) {
     return getExampleDefaultDescription(property);
   }
 
-  if (isLazyTypeFunc(propertyType as LazyTypeFunc | Type<unknown>)) {
+  if (
+    isLazyTypeFuncApiPropertyType(propertyType as LazyTypeFunc | Type<unknown>)
+  ) {
     const constructorType = (propertyType as LazyTypeFunc)();
 
     if (Array.isArray(constructorType)) {
