@@ -1,5 +1,11 @@
 import { HttpStatus } from '@nestjs/common';
 
+export interface ExceptionResponseConstant {
+  statusCode: HttpStatus;
+  code: string;
+  message: string;
+}
+
 export const EXCEPTION_RESPONSE = {
   // Common
   InvalidInputValue: {

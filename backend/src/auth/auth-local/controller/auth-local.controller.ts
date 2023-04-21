@@ -19,7 +19,8 @@ import { AuthJwtCookieService } from '../../jwt/service/auth-jwt-cookie.service'
 import { HttpExceptionFilter } from '../../../common/exception/exception-filter/http-exception-filter';
 import { HttpResponseInterceptor } from '../../../common/interceptor/http-response.interceptor';
 import { InvalidInputError } from '../../../common/error/invalid-input.error';
-import { ApiCustomExceptionResponse } from '../../../common/lib/swagger/decorator/api-response.decorator';
+import { ApiHttpExceptionResponse } from '../../../common/lib/swagger/decorator/api-http-exception-response.decorator';
+import { EXCEPTION_RESPONSE } from '../../../common/exception/constant';
 
 @ApiTags('auth')
 @UseFilters(HttpExceptionFilter)
@@ -37,18 +38,19 @@ export class AuthLocalController {
     status: HttpStatus.OK,
     description: '로그인 성공',
   })
-  @ApiCustomExceptionResponse(HttpStatus.BAD_REQUEST, [
+  @ApiHttpExceptionResponse(HttpStatus.BAD_REQUEST, [
     {
-      exampleTitle: '입력 정보가 검증 규칙에 위배된 경우',
-      exampleDescription: '입력 정보가 검즘에 실패했을 때 응답입니다.',
-      model: InvalidInputError,
+      title: '입력 정보가 검증 규칙에 위배된 경우',
+      description: '입력 정보가 검즘에 실패했을 때 응답입니다.',
+      type: InvalidInputError,
+      response: EXCEPTION_RESPONSE.InvalidInputValue,
     },
   ])
-  @ApiCustomExceptionResponse(HttpStatus.UNAUTHORIZED, [
+  @ApiHttpExceptionResponse(HttpStatus.UNAUTHORIZED, [
     {
-      exampleTitle: '존재하지 않는 사용자 정보일 경우',
-      exampleDescription:
-        '존재허지 않는 사용자의 정보를 입력했을 때 응답입니다.',
+      title: '존재하지 않는 사용자 정보일 경우',
+      description: '존재허지 않는 사용자의 정보를 입력했을 때 응답입니다.',
+      response: EXCEPTION_RESPONSE.LoginFail,
     },
   ])
   @HttpCode(HttpStatus.OK)
