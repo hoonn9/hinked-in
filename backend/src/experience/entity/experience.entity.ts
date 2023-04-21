@@ -10,11 +10,11 @@ import {
 import { DateColumnEntity } from '../../common/entity/date-column.entity';
 import { genUUID } from '../../common/lib/uuid';
 import { EmploymentTypeEntity } from '../../employment-type/entity/employment-type.entity';
-import { ApiUUIDProperty } from '../../common/lib/swagger/api-uuid-property.decorator';
+import { ApiUUIDProperty } from '../../common/lib/swagger/decorator/api-uuid-property.decorator';
 import { IsID } from '../../common/decorator/validate-decorator/is-id.decorator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsDate, IsOptional, IsString } from 'class-validator';
-import { ApiDateProperty } from '../../common/lib/swagger/api-date-property.decorator';
+import { ApiDateProperty } from '../../common/lib/swagger/decorator/api-date-property.decorator';
 import { Type } from 'class-transformer';
 import { ExperienceConstructorParams } from '../typing/experience.type';
 import { MemberEntity } from '../../member/entity/member.entity';

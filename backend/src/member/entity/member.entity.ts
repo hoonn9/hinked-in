@@ -9,11 +9,11 @@ import { DateColumnEntity } from '../../common/entity/date-column.entity';
 import { MemberConstructorParams } from '../typing/member.type';
 import { genUUID } from '../../common/lib/uuid';
 import { ExperienceEntity } from '../../experience/entity/experience.entity';
-import { ApiEmailProperty } from '../../common/lib/swagger/api-email-property.decorator';
+import { ApiEmailProperty } from '../../common/lib/swagger/decorator/api-email-property.decorator';
 import { IsEmail, IsOptional, IsString, Length } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsPassword } from '../../common/decorator/validate-decorator/is-password.decorator';
-import { ApiUUIDProperty } from '../../common/lib/swagger/api-uuid-property.decorator';
+import { ApiUUIDProperty } from '../../common/lib/swagger/decorator/api-uuid-property.decorator';
 
 @Entity({
   name: 'member',

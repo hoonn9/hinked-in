@@ -1,5 +1,5 @@
 import { ApiPropertyOptions } from '@nestjs/swagger';
-import { CustomApiProperty } from './custom-api-property.decorator';
+import { CustomApiProperty } from '../util/custom-api-property';
 
 export const ApiPasswordProperty = (options?: ApiPropertyOptions) =>
   CustomApiProperty({
