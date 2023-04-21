@@ -1,5 +1,5 @@
-import { CustomApiPropertyOptions } from './custom-api-property.interface';
-import { CustomApiProperty } from './custom-api-property.decorator';
+import { CustomApiPropertyOptions } from '../util/custom-api-property.interface';
+import { CustomApiProperty } from '../util/custom-api-property';
 
 export const ApiEmailProperty = (options?: CustomApiPropertyOptions) =>
   CustomApiProperty({

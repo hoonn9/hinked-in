@@ -1,6 +1,6 @@
 import { HttpStatus, Type, applyDecorators } from '@nestjs/common';
-import { transformDTOToExample } from './util/transform-dto-to-example';
-import { HttpExceptionResponseDto } from '../../exception/dto/http-exception-response.dto';
+import { transformDTOToExample } from '../util/transform/transform-dto-to-example';
+import { HttpExceptionResponseDto } from '../../../exception/dto/http-exception-response.dto';
 import { ApiExtraModels, ApiResponse, getSchemaPath } from '@nestjs/swagger';
 
 interface CustomResponseOption {
@@ -16,6 +16,7 @@ export const ApiCustomExceptionResponse = (
   options: CustomResponseOption[],
 ) => {
   const examples: Record<string, any> = {};
+
   options.forEach((option) => {
     const responseExample = transformDTOToExample(HttpExceptionResponseDto);
 

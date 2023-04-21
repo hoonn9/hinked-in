@@ -19,7 +19,7 @@ import { AuthJwtCookieService } from '../../jwt/service/auth-jwt-cookie.service'
 import { HttpExceptionFilter } from '../../../common/exception/exception-filter/http-exception-filter';
 import { HttpResponseInterceptor } from '../../../common/interceptor/http-response.interceptor';
 import { InvalidInputError } from '../../../common/error/invalid-input.error';
-import { ApiCustomExceptionResponse } from '../../../common/lib/swagger/api-response.decorator';
+import { ApiCustomExceptionResponse } from '../../../common/lib/swagger/decorator/api-response.decorator';
 
 @ApiTags('auth')
 @UseFilters(HttpExceptionFilter)
