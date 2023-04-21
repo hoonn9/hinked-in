@@ -11,7 +11,7 @@ import {
 import { AuthLocalGuard } from '../guard/auth-local.guard';
 import { ApiImplicitBody } from '@nestjs/swagger/dist/decorators/api-implicit-body.decorator';
 import { AuthLocalBodyDto } from '../dto/auth-local.dto';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '../../decorator/current-user.decorator';
 import { MemberEntity } from '../../../member/entity/member.entity';
 import { Response } from 'express';
@@ -21,6 +21,7 @@ import { HttpResponseInterceptor } from '../../../common/interceptor/http-respon
 import { InvalidInputError } from '../../../common/error/invalid-input.error';
 import { ApiHttpExceptionResponse } from '../../../common/lib/swagger/decorator/api-http-exception-response.decorator';
 import { EXCEPTION_RESPONSE } from '../../../common/exception/constant';
+import { ApiHttpResponse } from '../../../common/lib/swagger/decorator/api-http-response.decorator';
 
 @ApiTags('auth')
 @UseFilters(HttpExceptionFilter)
@@ -34,10 +35,13 @@ export class AuthLocalController {
     type: AuthLocalBodyDto,
     content: {},
   })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: '로그인 성공',
-  })
+  @ApiHttpResponse(HttpStatus.OK, [
+    {
+      title: '로그인에 성공했을 경우',
+      description: '로그인 성공했을 때의 응답입니다.',
+      type: true,
+    },
+  ])
   @ApiHttpExceptionResponse(HttpStatus.BAD_REQUEST, [
     {
       title: '입력 정보가 검증 규칙에 위배된 경우',

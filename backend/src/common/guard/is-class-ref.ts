@@ -1,4 +1,6 @@
-export const isClassRef = (object: any): boolean => {
+import { Type } from '@nestjs/common';
+
+export const isClassRef = (object: any): object is Type => {
   if (typeof object !== 'function') {
     return false;
   }
