@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { MemberEntity } from '../../../member/entity/member.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CryptoService } from '../../../crypto/crypto.service';
-import { LoginFailException } from '../exception/login-fail.exception';
+import { LoginFailException } from '../../exception/login-fail.exception';
 
 @Injectable()
 export class AuthLocalValidateService {
