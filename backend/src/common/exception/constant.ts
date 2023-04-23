@@ -25,6 +25,11 @@ export const EXCEPTION_RESPONSE = {
     code: 'A001',
     message: '사용자의 이메일 또는 비밀번호가 올바르지 않습니다.',
   },
+  LoginNeed: {
+    statusCode: HttpStatus.UNAUTHORIZED,
+    code: 'A002',
+    message: '로그인이 필요합니다. 로그인 후 이용하세요.',
+  },
 
   // Member
   MemberNotExist: {

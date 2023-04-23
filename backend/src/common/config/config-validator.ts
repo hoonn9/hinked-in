@@ -1,6 +1,6 @@
 import { plainToInstance } from 'class-transformer';
 import { IsInt, IsOptional, IsString, validateSync } from 'class-validator';
-import { IsPortNumber } from './common/decorator/validate-decorator/is-port-number.decorator';
+import { IsPortNumber } from '../decorator/validate-decorator/is-port-number.decorator';
 
 class EnvironmentVariables {
   @IsPortNumber()

@@ -18,7 +18,6 @@ import { Response } from 'express';
 import { AuthJwtCookieService } from '../../jwt/service/auth-jwt-cookie.service';
 import { HttpExceptionFilter } from '../../../common/exception/exception-filter/http-exception-filter';
 import { HttpResponseInterceptor } from '../../../common/interceptor/http-response.interceptor';
-import { InvalidInputError } from '../../../common/error/invalid-input.error';
 import { ApiHttpExceptionResponse } from '../../../common/lib/swagger/decorator/api-http-exception-response.decorator';
 import { EXCEPTION_RESPONSE } from '../../../common/exception/constant';
 import { ApiHttpResponse } from '../../../common/lib/swagger/decorator/api-http-response.decorator';
@@ -30,11 +29,6 @@ import { ApiHttpResponse } from '../../../common/lib/swagger/decorator/api-http-
 export class AuthLocalController {
   constructor(private readonly authJwtCookieService: AuthJwtCookieService) {}
 
-  @ApiImplicitBody({
-    name: 'body',
-    type: AuthLocalBodyDto,
-    content: {},
-  })
   @ApiHttpResponse(HttpStatus.OK, [
     {
       title: '로그인에 성공했을 경우',
@@ -42,14 +36,7 @@ export class AuthLocalController {
       type: true,
     },
   ])
-  @ApiHttpExceptionResponse(HttpStatus.BAD_REQUEST, [
-    {
-      title: '입력 정보가 검증 규칙에 위배된 경우',
-      description: '입력 정보가 검즘에 실패했을 때 응답입니다.',
-      type: InvalidInputError,
-      response: EXCEPTION_RESPONSE.InvalidInputValue,
-    },
-  ])
+  @ApiHttpExceptionResponse(HttpStatus.BAD_REQUEST)
   @ApiHttpExceptionResponse(HttpStatus.UNAUTHORIZED, [
     {
       title: '존재하지 않는 사용자 정보일 경우',
@@ -57,6 +44,11 @@ export class AuthLocalController {
       response: EXCEPTION_RESPONSE.LoginFail,
     },
   ])
+  @ApiImplicitBody({
+    name: 'body',
+    type: AuthLocalBodyDto,
+    content: {},
+  })
   @HttpCode(HttpStatus.OK)
   @UseGuards(AuthLocalGuard)
   @Post('login')

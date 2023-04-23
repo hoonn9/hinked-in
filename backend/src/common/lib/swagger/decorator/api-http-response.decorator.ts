@@ -79,7 +79,7 @@ const createExamples = (options: ExampleOption[]) => {
 const getModels = (options: ExampleOption[]) => [
   ...new Set(
     [...options.map((option) => option.type)].filter(
-      (type): type is Type => type !== null,
+      (type): type is Type => type != null,
     ),
   ),
 ];

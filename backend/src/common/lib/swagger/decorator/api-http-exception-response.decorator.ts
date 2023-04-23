@@ -3,8 +3,9 @@ import { transformDTOToExample } from '../util/transform/transform-dto-to-exampl
 import { HttpExceptionResponseDto } from '../../../exception/dto/http-exception-response.dto';
 import { ApiExtraModels, ApiResponse, getSchemaPath } from '@nestjs/swagger';
 import { ExceptionResponseConstant } from '../../../exception/constant';
+import { invalidInputExceptionExample } from '../example/exception-example';
 
-interface ExampleOption {
+export interface ExceptionExampleOption {
   type?: Type;
   title: string;
   description?: string;
@@ -12,14 +13,23 @@ interface ExampleOption {
   response?: ExceptionResponseConstant;
 }
 
+interface ApiHttpExceptionResponseOptions {
+  isSkipValidationExample?: boolean;
+}
+
 export const ApiHttpExceptionResponse = (
   status: HttpStatus,
-  options: ExampleOption[],
+  exampleOptions: ExceptionExampleOption[] = [],
+  options?: ApiHttpExceptionResponseOptions,
 ) => {
-  const examples = createExamples(options);
-  validStatusCode(status, options);
+  if (status === HttpStatus.BAD_REQUEST && !options?.isSkipValidationExample) {
+    exampleOptions.push(invalidInputExceptionExample);
+  }
 
-  const models = getModels(options);
+  const examples = createExamples(exampleOptions);
+  validStatusCode(status, exampleOptions);
+
+  const models = getModels(exampleOptions);
 
   return applyDecorators(
     ApiExtraModels(HttpExceptionResponseDto, ...models),
@@ -42,7 +52,7 @@ export const ApiHttpExceptionResponse = (
   );
 };
 
-const createExamples = (options: ExampleOption[]) => {
+const createExamples = (options: ExceptionExampleOption[]) => {
   const result: Record<string, any> = {};
 
   options.forEach((option) => {
@@ -59,16 +69,21 @@ const createExamples = (options: ExampleOption[]) => {
       responseExample.message = option.response.message;
     }
 
-    result[option.title] = {
-      value: responseExample,
-      description: option.description,
-    };
+    if (option.title) {
+      result[option.title] = {
+        value: responseExample,
+        description: option.description,
+      };
+    }
   });
 
   return result;
 };
 
-const validStatusCode = (status: HttpStatus, options: ExampleOption[]) => {
+const validStatusCode = (
+  status: HttpStatus,
+  options: ExceptionExampleOption[],
+) => {
   if (
     options.some(
       (option) => option.response && option.response.statusCode !== status,
@@ -80,7 +95,7 @@ const validStatusCode = (status: HttpStatus, options: ExampleOption[]) => {
   }
 };
 
-const getModels = (options: ExampleOption[]) => [
+const getModels = (options: ExceptionExampleOption[]) => [
   ...new Set(
     [...options.map((option) => option.type)].filter(
       (type): type is Type => type != null,
