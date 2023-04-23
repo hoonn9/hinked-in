@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { MemberModule } from './member/member.module';
 import { AuthModule } from './auth/auth.module';
@@ -22,6 +21,5 @@ import { envFilePath } from './common/config/env-file-path';
     ExperienceModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
