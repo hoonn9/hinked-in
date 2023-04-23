@@ -7,7 +7,7 @@ export const isClassRef = (object: any): object is Type => {
 
   const classPrototype = Object.getPrototypeOf(object.prototype);
 
-  if (!classPrototype || classPrototype.constructor !== Object) {
+  if (!classPrototype || typeof classPrototype.constructor !== 'function') {
     return false;
   }
 

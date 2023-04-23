@@ -1,3 +1,4 @@
+import { Type } from '@nestjs/common';
 import { isClassRef } from '../../../../src/common/guard/is-class-ref';
 
 describe('IsClassRef', () => {
@@ -17,7 +18,7 @@ describe('IsClassRef', () => {
     const obj = {};
 
     // when
-    const result = isClassRef(obj);
+    const result = isClassRef(obj as Type);
 
     // then
     expect(result).toBe(false);
@@ -25,7 +26,7 @@ describe('IsClassRef', () => {
 
   it('Function인 경우 false를 반환한다.', () => {
     // given
-    const func = function () {
+    const func: any = function () {
       return;
     };
 
@@ -39,7 +40,7 @@ describe('IsClassRef', () => {
   it.each([1, BigInt(1), 'string', false, true, null, undefined, Symbol()])(
     'Primitive Type인 경우 false를 반환한다.',
     (type) => {
-      expect(isClassRef(type)).toBe(false);
+      expect(isClassRef(type as any)).toBe(false);
     },
   );
 });
