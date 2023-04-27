@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  HttpCode,
+  HttpStatus,
   Post,
   UseFilters,
   UseInterceptors,
@@ -21,6 +23,9 @@ import { TransactionContext } from '../common/decorator/transaction-manager.deco
 import { TransactionManager } from '../common/type/transaction-manager.type';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { MemberEntity } from '../member/entity/member.entity';
+import { ApiHttpResponse } from '../common/lib/swagger/decorator/api-http-response.decorator';
+import { ApiHttpExceptionResponse } from '../common/lib/swagger/decorator/api-http-exception-response.decorator';
+import { EXCEPTION_RESPONSE } from '../common/exception/constant';
 
 @ApiTags('experience')
 @UseFilters(HttpExceptionFilter)
@@ -29,14 +34,24 @@ import { MemberEntity } from '../member/entity/member.entity';
 export class ExperienceController {
   constructor(private readonly experienceService: ExperienceService) {}
 
-  @ApiOperation({ description: '경력을 생성한다.' })
-  @ApiCreatedResponse({
-    description: '생성 성공',
-  })
-  @ApiNotFoundResponse({
-    description:
-      '존재하지 않는 EmploymentTypeId를 입력했을 때 예외가 발생한다.',
-  })
+  @ApiOperation({ description: '로그인된 멤버의 경력을 생성합니다.' })
+  @ApiHttpResponse(HttpStatus.CREATED, [
+    {
+      title: '경력 생성에 성공했을 경우',
+      description: '경력 생성에 성공했을 때의 응답입니다.',
+      type: true,
+    },
+  ])
+  @ApiHttpExceptionResponse(HttpStatus.NOT_FOUND, [
+    {
+      title: '존재하지 않는 EmploymentTypeId으로 요청했을 경우',
+      description:
+        '존재하지 않는 EmploymentTypeId으로 요청했을 때의 응답입니다.',
+      response: EXCEPTION_RESPONSE.EntityNotExist,
+    },
+  ])
+  @ApiHttpExceptionResponse(HttpStatus.BAD_REQUEST)
+  @HttpCode(HttpStatus.CREATED)
   @Auth()
   @TransactionRoute()
   @Post()
@@ -44,7 +59,8 @@ export class ExperienceController {
     @TransactionContext() manager: TransactionManager,
     @CurrentUser() member: MemberEntity,
     @Body() body: CreateExperienceBodyDto,
-  ): Promise<void> {
+  ): Promise<true> {
     await this.experienceService.addExperience(body, member, manager);
+    return true;
   }
 }

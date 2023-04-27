@@ -51,7 +51,7 @@ export class MemberController {
   }
 
   @ApiOperation({
-    description: '유저를 생성합니다.',
+    description: '새로운 멤버를 생성합니다.',
   })
   @ApiCommandHttpResponse(HttpStatus.CREATED)
   @ApiHttpExceptionResponse(HttpStatus.BAD_REQUEST, [
@@ -72,7 +72,7 @@ export class MemberController {
   }
 
   @ApiOperation({
-    description: '유저 정보를 수정합니다.',
+    description: '로그인된 멤버 정보를 수정합니다.',
   })
   @ApiCommandHttpResponse()
   @ApiHttpExceptionResponse(HttpStatus.BAD_REQUEST)
@@ -96,7 +96,7 @@ export class MemberController {
   }
 
   @ApiOperation({
-    description: '유저 계정을 삭제합니다.',
+    description: '로그인된 멤버 계정을 삭제합니다.',
   })
   @ApiCommandHttpResponse()
   @ApiHttpExceptionResponse(HttpStatus.NOT_FOUND, [
