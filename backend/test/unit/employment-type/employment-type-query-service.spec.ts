@@ -6,14 +6,7 @@ import { Repository } from 'typeorm';
 import { genUUID } from '../../../src/common/lib/uuid';
 import { EntityNotExistException } from '../../../src/common/exception/custom-excpetion/entity-not-exist-exception';
 import { EmploymentTypeFixture } from '../../fixture/employment-type/employment-type-fixture';
-
-const mockRepository = {
-  createQueryBuilder: jest.fn().mockReturnValue({
-    where: jest.fn().mockReturnThis(),
-    getOne: jest.fn().mockReturnThis(),
-    getExists: jest.fn().mockReturnThis(),
-  }),
-};
+import { mockRepository } from '../../lib/mock/mock-typeorm';
 
 describe('EmploymentTypeQueryService', () => {
   let employmentTypeQueryService: EmploymentTypeQueryService;
@@ -25,7 +18,7 @@ describe('EmploymentTypeQueryService', () => {
         EmploymentTypeQueryService,
         {
           provide: getRepositoryToken(EmploymentTypeEntity),
-          useValue: mockRepository,
+          useValue: mockRepository(),
         },
       ],
     }).compile();

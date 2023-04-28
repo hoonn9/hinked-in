@@ -24,3 +24,11 @@ export const MockTypeormDateColumns = () => {
 };
 
 export const mockEntityManager = () => mockAllFields(EntityManager);
+
+export const mockRepository = () => ({
+  createQueryBuilder: jest.fn().mockReturnValue({
+    where: jest.fn().mockReturnThis(),
+    getOne: jest.fn().mockReturnThis(),
+    getExists: jest.fn().mockReturnThis(),
+  }),
+});
