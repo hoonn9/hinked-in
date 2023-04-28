@@ -4,11 +4,15 @@ import { CreateExperienceBodyDto } from './dto/create-experience.dto';
 import { ExperienceEntity } from './entity/experience.entity';
 import { EntityManager } from 'typeorm';
 import { MemberEntity } from '../member/entity/member.entity';
+import { CompanyQueryService } from '../company/service/company-query.service';
+import { IndustryQueryService } from '../industry/service/industry-query.service';
 
 @Injectable()
 export class ExperienceService {
   constructor(
     private readonly employmentTypeQueryService: EmploymentTypeQueryService,
+    private readonly companyQueryService: CompanyQueryService,
+    private readonly industryQueryService: IndustryQueryService,
   ) {}
 
   async addExperience(
@@ -21,13 +25,21 @@ export class ExperienceService {
         input.employmentTypeId,
       );
 
+    const company = await this.companyQueryService.findOneByIdOrFail(
+      input.companyId,
+    );
+
+    const industry = await this.industryQueryService.findOneByIdOrFail(
+      input.industryId,
+    );
+
     const experience = ExperienceEntity.new({
       title: input.title,
       memberId: member.id,
       employmentTypeId: employmentType.id,
-      companyName: 'company',
-      location: 'location',
-      industry: 'industry',
+      companyId: company.id,
+      location: input.location,
+      industryId: industry.id,
       description: input.description,
       headline: input.headline,
       startDate: input.startDate,

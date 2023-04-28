@@ -4,9 +4,9 @@ export interface ExperienceConstructorParams {
   title: string;
   memberId: string;
   employmentTypeId: string;
-  companyName: string;
+  companyId: string;
   location: string;
-  industry: string;
+  industryId: string;
   description?: Nullable<string>;
   headline: string;
   startDate: Date;
