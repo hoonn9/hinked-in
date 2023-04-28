@@ -5,6 +5,9 @@ import { validateSeederConfig } from './seeder-config-validator';
 import { SeederExecutionService } from './seeder-execution.service';
 import { DiscoveryModule } from '@nestjs/core';
 import { EmploymentTypeSeedService } from './service/employment-type-seed.service';
+import { IndustrySeedService } from './service/industry-seed.service';
+
+const seedServices = [EmploymentTypeSeedService, IndustrySeedService];
 
 @Module({
   imports: [
@@ -16,6 +19,6 @@ import { EmploymentTypeSeedService } from './service/employment-type-seed.servic
     }),
     DatabaseModule,
   ],
-  providers: [SeederExecutionService, EmploymentTypeSeedService],
+  providers: [SeederExecutionService, ...seedServices],
 })
 export class SeederModule {}
