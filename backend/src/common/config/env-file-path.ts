@@ -5,5 +5,3 @@ export const envFilePath = (function () {
 
   return '.env.local';
 })();
-
-console.log(envFilePath);

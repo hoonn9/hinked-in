@@ -6,6 +6,9 @@ export class CreateExperienceBodyDto extends PickType(ExperienceEntity, [
   'description',
   'headline',
   'employmentTypeId',
+  'companyId',
+  'industryId',
+  'location',
   'startDate',
   'endDate',
 ]) {}

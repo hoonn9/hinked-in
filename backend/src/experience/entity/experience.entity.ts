@@ -18,6 +18,8 @@ import { ApiDateProperty } from '../../common/lib/swagger/decorator/api-date-pro
 import { Type } from 'class-transformer';
 import { ExperienceConstructorParams } from '../typing/experience.type';
 import { MemberEntity } from '../../member/entity/member.entity';
+import { CompanyEntity } from '../../company/entity/company.entity';
+import { IndustryEntity } from '../../industry/entity/industry.entity';
 
 @Entity({
   name: 'experience',
@@ -52,14 +54,41 @@ export class ExperienceEntity extends DateColumnEntity {
   @Column({ type: 'uuid', name: 'employment_type_id' })
   employmentTypeId: string;
 
-  @Column({ type: 'text', name: 'company_name' })
-  companyName: string;
+  @ManyToOne(() => CompanyEntity)
+  @JoinColumn({
+    name: 'company_id',
+    referencedColumnName: 'id',
+    foreignKeyConstraintName: 'experience_company_id_fkey',
+  })
+  company: CompanyEntity | null;
 
+  @ApiUUIDProperty()
+  @IsID()
+  @RelationId((entity: ExperienceEntity) => entity.company)
+  @Column({ type: 'uuid', name: 'company_id' })
+  companyId: string;
+
+  @ApiProperty({
+    name: 'location',
+    type: String,
+  })
+  @IsString()
   @Column({ type: 'text', name: 'location' })
   location: string;
 
-  @Column({ type: 'text', name: 'industry' })
-  industry: string;
+  @ManyToOne(() => IndustryEntity)
+  @JoinColumn({
+    foreignKeyConstraintName: 'experience_industry_id_fkey',
+    name: 'industry_id',
+    referencedColumnName: 'id',
+  })
+  industry: IndustryEntity | null;
+
+  @ApiUUIDProperty()
+  @IsID()
+  @RelationId((entity: ExperienceEntity) => entity.industry)
+  @Column({ type: 'uuid', name: 'industry_id' })
+  industryId: string;
 
   @ApiPropertyOptional({
     name: 'description',
@@ -121,9 +150,9 @@ export class ExperienceEntity extends DateColumnEntity {
     experience.title = params.title;
     experience.memberId = params.memberId;
     experience.employmentTypeId = params.employmentTypeId;
-    experience.companyName = params.companyName;
+    experience.companyId = params.companyId;
     experience.location = params.location;
-    experience.industry = params.industry;
+    experience.industryId = params.industryId;
     experience.description = params.description || null;
     experience.headline = params.headline;
     experience.startDate = params.startDate;

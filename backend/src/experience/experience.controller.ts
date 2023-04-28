@@ -10,12 +10,7 @@ import {
 import { HttpExceptionFilter } from '../common/exception/exception-filter/http-exception-filter';
 import { Auth } from '../auth/decorator/auth.decorator';
 import { CreateExperienceBodyDto } from './dto/create-experience.dto';
-import {
-  ApiCreatedResponse,
-  ApiNotFoundResponse,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { HttpResponseInterceptor } from '../common/interceptor/http-response.interceptor';
 import { ExperienceService } from './experience.service';
 import { TransactionRoute } from '../common/decorator/transaction-route.decorator';
@@ -44,9 +39,8 @@ export class ExperienceController {
   ])
   @ApiHttpExceptionResponse(HttpStatus.NOT_FOUND, [
     {
-      title: '존재하지 않는 EmploymentTypeId으로 요청했을 경우',
-      description:
-        '존재하지 않는 EmploymentTypeId으로 요청했을 때의 응답입니다.',
+      title: 'EmploymentTypeId, CompanyId, IndustryId 중 존재하지 않을 경우',
+      description: '존재하지 않는 ID를 포함하여 요청했을 때의 응답입니다.',
       response: EXCEPTION_RESPONSE.EntityNotExist,
     },
   ])
@@ -55,7 +49,7 @@ export class ExperienceController {
   @Auth()
   @TransactionRoute()
   @Post()
-  async create(
+  async addExperience(
     @TransactionContext() manager: TransactionManager,
     @CurrentUser() member: MemberEntity,
     @Body() body: CreateExperienceBodyDto,
