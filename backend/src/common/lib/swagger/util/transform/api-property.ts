@@ -13,13 +13,40 @@ export const wrapArrayElement = (
   return element;
 };
 
+export const getPrimitiveExample = (
+  optionType: ApiPropertyOptionsWithFieldName['type'],
+) => {
+  if (
+    optionType === 'string' ||
+    optionType === 'number' ||
+    optionType === 'boolean'
+  ) {
+    return optionType;
+  }
+
+  if (optionType === String) {
+    return 'string';
+  }
+
+  if (optionType === Number) {
+    return 'number';
+  }
+
+  if (optionType === Boolean) {
+    return 'boolean';
+  }
+
+  return undefined;
+};
+
 export const getExampleDefaultDescription = (
   property: ApiPropertyOptionsWithFieldName,
 ) => {
   if (typeof property.example !== 'undefined') {
     return property.example;
   }
-  return property.description;
+
+  return property.description || getPrimitiveExample(property.type);
 };
 
 export const getApiPropertyKeys = (classRef: Type): string[] => {

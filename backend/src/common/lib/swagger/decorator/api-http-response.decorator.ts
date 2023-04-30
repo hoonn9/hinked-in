@@ -1,5 +1,8 @@
 import { HttpStatus, Type, applyDecorators } from '@nestjs/common';
-import { transformDTOToExample } from '../util/transform/transform-dto-to-example';
+import {
+  getExampleByType,
+  transformDTOToExample,
+} from '../util/transform/transform-dto-to-example';
 import {
   ApiExtraModels,
   ApiResponse,
@@ -8,7 +11,6 @@ import {
 } from '@nestjs/swagger';
 import { HttpResponseDto } from '../../../response/http-response.dto';
 import { HTTP_RESPONSE_SUCCESS_CODE } from '../../../response/constants';
-import { isClassRef } from '../../../guard/is-class-ref';
 import { isPrimitive } from '../../../guard/is-primitive-type';
 
 interface ExampleOption {
@@ -58,13 +60,8 @@ const createExamples = (options: ExampleOption[]) => {
 
   options.forEach((option) => {
     const responseExample = transformDTOToExample(HttpResponseDto);
-    const type = option.type;
-    if (isClassRef(type)) {
-      responseExample.data = [transformDTOToExample(type)];
-    } else {
-      responseExample.data = type;
-    }
 
+    responseExample.data = getExampleByType(option.type);
     responseExample.code = HTTP_RESPONSE_SUCCESS_CODE;
 
     result[option.title] = {
@@ -78,8 +75,13 @@ const createExamples = (options: ExampleOption[]) => {
 
 const getModels = (options: ExampleOption[]) => [
   ...new Set(
-    [...options.map((option) => option.type)].filter(
-      (type): type is Type => type != null,
-    ),
+    [
+      ...options.map((option) => {
+        if (Array.isArray(option.type)) {
+          return option.type[0];
+        }
+        return option.type;
+      }),
+    ].filter((type): type is Type => type != null),
   ),
 ];

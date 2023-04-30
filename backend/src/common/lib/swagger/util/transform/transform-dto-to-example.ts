@@ -10,6 +10,35 @@ import {
   isLazyTypeFuncApiPropertyType,
   isPrimitiveApiPropertyType,
 } from './is';
+import { ApiPropertyOptions } from '@nestjs/swagger';
+import { isClassRef } from '../../../../guard/is-class-ref';
+
+export const getExampleByType = (
+  type: ApiPropertyOptions['type'] | boolean,
+): any => {
+  if (Array.isArray(type)) {
+    const [arrayType] = type;
+
+    if (isClassRef(arrayType)) {
+      return [getExampleByType(arrayType)];
+    }
+
+    if (typeof arrayType === 'function') {
+      return [getExampleByType(arrayType())];
+    }
+    return [getExampleByType(arrayType)];
+  }
+
+  if (isClassRef(type)) {
+    return transformDTOToExample(type);
+  }
+
+  if (typeof type === 'function') {
+    return getExampleByType(type());
+  }
+
+  return type;
+};
 
 export const transformDTOToExample = <T>(
   classRef: Type<T>,
