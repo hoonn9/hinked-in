@@ -14,6 +14,10 @@ export class EmploymentTypeQueryService extends CoreQueryService<EmploymentTypeE
     super(employmentTypeRepository);
   }
 
+  async findMany(manager?: EntityManager) {
+    return this.createQueryBuilder('employment_type', manager).getMany();
+  }
+
   async findOneByIdOrFail(id: string, manager?: EntityManager) {
     const employmentType = await this.createQueryBuilder(
       'employment_type',
