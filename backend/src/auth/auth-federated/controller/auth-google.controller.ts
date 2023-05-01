@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  HttpStatus,
-  Redirect,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Get, HttpStatus, Redirect, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from '../../decorator/current-user.decorator';
 import { MemberEntity } from '../../../member/entity/member.entity';
@@ -16,9 +9,10 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { UseController } from '../../../common/decorator/use-controller.decorator';
 
 @ApiTags('auth')
-@Controller('auth/google')
+@UseController('auth/google')
 export class AuthGoogleController {
   @ApiOperation({
     description: '구글 로그인 페이지로 연결합니다.',

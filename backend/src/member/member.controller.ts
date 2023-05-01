@@ -1,12 +1,9 @@
 import {
-  Controller,
   Get,
   Post,
   Body,
   Patch,
   Delete,
-  UseFilters,
-  UseInterceptors,
   HttpStatus,
   HttpCode,
 } from '@nestjs/common';
@@ -19,19 +16,16 @@ import { TransactionManager } from '../common/type/transaction-manager.type';
 import { Auth } from '../auth/decorator/auth.decorator';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { MemberEntity } from './entity/member.entity';
-import { HttpExceptionFilter } from '../common/exception/exception-filter/http-exception-filter';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { HttpResponseInterceptor } from '../common/interceptor/http-response.interceptor';
 import { ApiHttpResponse } from '../common/lib/swagger/decorator/api-http-response.decorator';
 import { ApiHttpExceptionResponse } from '../common/lib/swagger/decorator/api-http-exception-response.decorator';
 import { EXCEPTION_RESPONSE } from '../common/exception/constant';
 import { FieldError } from '../common/error/field.error';
 import { ApiCommandHttpResponse } from '../common/lib/swagger/decorator/api-http-command-response.decorator';
+import { UseController } from '../common/decorator/use-controller.decorator';
 
 @ApiTags('member')
-@UseFilters(HttpExceptionFilter)
-@UseInterceptors(HttpResponseInterceptor)
-@Controller('member')
+@UseController('member')
 export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 

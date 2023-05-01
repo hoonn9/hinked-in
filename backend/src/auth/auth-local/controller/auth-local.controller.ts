@@ -1,13 +1,4 @@
-import {
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Res,
-  UseFilters,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { HttpCode, HttpStatus, Post, Res, UseGuards } from '@nestjs/common';
 import { AuthLocalGuard } from '../guard/auth-local.guard';
 import { ApiImplicitBody } from '@nestjs/swagger/dist/decorators/api-implicit-body.decorator';
 import { AuthLocalBodyDto } from '../dto/auth-local.dto';
@@ -16,16 +7,13 @@ import { CurrentUser } from '../../decorator/current-user.decorator';
 import { MemberEntity } from '../../../member/entity/member.entity';
 import { Response } from 'express';
 import { AuthJwtCookieService } from '../../jwt/service/auth-jwt-cookie.service';
-import { HttpExceptionFilter } from '../../../common/exception/exception-filter/http-exception-filter';
-import { HttpResponseInterceptor } from '../../../common/interceptor/http-response.interceptor';
 import { ApiHttpExceptionResponse } from '../../../common/lib/swagger/decorator/api-http-exception-response.decorator';
 import { EXCEPTION_RESPONSE } from '../../../common/exception/constant';
 import { ApiHttpResponse } from '../../../common/lib/swagger/decorator/api-http-response.decorator';
+import { UseController } from '../../../common/decorator/use-controller.decorator';
 
 @ApiTags('auth')
-@UseFilters(HttpExceptionFilter)
-@UseInterceptors(HttpResponseInterceptor)
-@Controller('auth')
+@UseController('auth')
 export class AuthLocalController {
   constructor(private readonly authJwtCookieService: AuthJwtCookieService) {}
 
