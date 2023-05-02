@@ -1,4 +1,4 @@
 export interface EntitySearchOption {
   keyword: string;
-  fields: string[];
+  field: string[];
 }

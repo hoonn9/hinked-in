@@ -1,9 +1,11 @@
 import { EntityManager, ObjectLiteral, Repository } from 'typeorm';
+import { CustomQueryBuilder } from '../../database/typeorm/custom-query-builder';
 
-export class CoreQueryService<T extends ObjectLiteral> {
-  constructor(private readonly repository: Repository<T>) {}
+export abstract class CoreQueryService<T extends ObjectLiteral> {
+  constructor(protected readonly repository: Repository<T>) {}
 
   createQueryBuilder(alias?: string, manager?: EntityManager) {
-    return this.repository.createQueryBuilder(alias, manager?.queryRunner);
+    const qb = this.repository.createQueryBuilder(alias, manager?.queryRunner);
+    return new CustomQueryBuilder<T>(qb);
   }
 }
