@@ -5,6 +5,7 @@ import { CreateEmploymentTypeDto } from './dto/create-employment-type.dto';
 import { EmploymentTypeQueryService } from './service/employment-type-query.service';
 import { AlreadyExistError } from '../common/error/already-exist.error';
 import { EmploymentTypeDto } from './dto/employment-type.dto';
+import { EntitySearchQueryDto } from '../common/dto/entity-search.dto';
 
 @Injectable()
 export class EmploymentTypeService {
@@ -12,8 +13,10 @@ export class EmploymentTypeService {
     private readonly employmentTypeQueryService: EmploymentTypeQueryService,
   ) {}
 
-  async getEmploymentTypes() {
-    const entities = await this.employmentTypeQueryService.findMany();
+  async getEmploymentTypes(searchQuery?: EntitySearchQueryDto) {
+    const entities = await this.employmentTypeQueryService.findMany(
+      searchQuery,
+    );
     return entities.map(EmploymentTypeDto.fromEntity);
   }
 

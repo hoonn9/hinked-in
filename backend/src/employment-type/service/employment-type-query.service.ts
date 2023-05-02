@@ -1,21 +1,46 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
-import { CoreQueryService } from '../../common/service/core-query.service';
+import { EntityManager, Repository, SelectQueryBuilder } from 'typeorm';
 import { EmploymentTypeEntity } from '../entity/employment-type.entity';
 import { EntityNotExistException } from '../../common/exception/custom-excpetion/entity-not-exist-exception';
+import { EntitySearchOption } from '../../common/interface/entity-search.interface';
+import { WhereParams } from '../../database/typeorm/interface/where.interface';
+import { CoreSearchableQueryService } from '../../common/service/core-searchable-query.service';
 
 @Injectable()
-export class EmploymentTypeQueryService extends CoreQueryService<EmploymentTypeEntity> {
+export class EmploymentTypeQueryService extends CoreSearchableQueryService<EmploymentTypeEntity> {
   constructor(
     @InjectRepository(EmploymentTypeEntity)
-    private readonly employmentTypeRepository: Repository<EmploymentTypeEntity>,
+    protected readonly employmentTypeRepository: Repository<EmploymentTypeEntity>,
   ) {
     super(employmentTypeRepository);
   }
 
-  async findMany(manager?: EntityManager) {
-    return this.createQueryBuilder('employment_type', manager).getMany();
+  async findMany(search?: EntitySearchOption, manager?: EntityManager) {
+    const qb = this.createQueryBuilder('employment_type', manager);
+
+    if (search) {
+      qb.andBracketWheres(this.getSearchWheres(qb, search));
+    }
+
+    return qb.getMany();
+  }
+
+  protected makeSearchWhereParams(
+    qb: SelectQueryBuilder<EmploymentTypeEntity>,
+    keyword: string,
+    field: string,
+  ): WhereParams | null {
+    if (field === 'name') {
+      return {
+        where: `${qb.alias}.name ILIKE :name_keyword`,
+        parameters: {
+          name_keyword: `%${keyword}%`,
+        },
+      };
+    }
+
+    return null;
   }
 
   async findOneByIdOrFail(id: string, manager?: EntityManager) {

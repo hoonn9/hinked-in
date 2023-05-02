@@ -5,8 +5,13 @@ import { Type } from '@nestjs/common';
 import { InvalidInputError } from '../error/invalid-input.error';
 
 export const ensureValidation = async <T extends Type>(cls: T, plain: any) => {
-  const dto = plainToInstance(cls, plain);
-  const errors = await validate(dto);
+  const instance = plainToInstance(cls, plain);
+  await validateOrFail(instance);
+  return instance;
+};
+
+export const validateOrFail = async <T extends object>(cls: T) => {
+  const errors = await validate(cls);
 
   if (errors.length) {
     throw new InvalidInputException(
@@ -15,6 +20,4 @@ export const ensureValidation = async <T extends Type>(cls: T, plain: any) => {
       ),
     );
   }
-
-  return dto;
 };

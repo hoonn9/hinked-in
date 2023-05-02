@@ -1,28 +1,16 @@
-import {
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Res,
-  UseFilters,
-  UseGuards,
-  UseInterceptors,
-} from '@nestjs/common';
+import { HttpCode, HttpStatus, Post, Res, UseGuards } from '@nestjs/common';
 import { CurrentUser } from '../../decorator/current-user.decorator';
 import { MemberEntity } from '../../../member/entity/member.entity';
 import { Response } from 'express';
 import { AuthJwtCookieService } from '../service/auth-jwt-cookie.service';
 import { JwtRefreshGuard } from '../guard/auth-refresh.guard';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { HttpResponseInterceptor } from '../../../common/interceptor/http-response.interceptor';
-import { HttpExceptionFilter } from '../../../common/exception/exception-filter/http-exception-filter';
 import { ApiHttpExceptionResponse } from '../../../common/lib/swagger/decorator/api-http-exception-response.decorator';
 import { EXCEPTION_RESPONSE } from '../../../common/exception/constant';
+import { UseController } from '../../../common/decorator/use-controller.decorator';
 
 @ApiTags('auth')
-@UseFilters(HttpExceptionFilter)
-@UseInterceptors(HttpResponseInterceptor)
-@Controller('auth')
+@UseController('auth')
 export class AuthJwtController {
   constructor(private readonly authJwtCookieService: AuthJwtCookieService) {}
 

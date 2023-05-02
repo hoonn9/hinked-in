@@ -1,17 +1,7 @@
-import {
-  Body,
-  Controller,
-  HttpCode,
-  HttpStatus,
-  Post,
-  UseFilters,
-  UseInterceptors,
-} from '@nestjs/common';
-import { HttpExceptionFilter } from '../common/exception/exception-filter/http-exception-filter';
+import { Body, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { Auth } from '../auth/decorator/auth.decorator';
 import { CreateExperienceBodyDto } from './dto/create-experience.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { HttpResponseInterceptor } from '../common/interceptor/http-response.interceptor';
 import { ExperienceService } from './experience.service';
 import { TransactionRoute } from '../common/decorator/transaction-route.decorator';
 import { TransactionContext } from '../common/decorator/transaction-manager.decorator';
@@ -21,11 +11,10 @@ import { MemberEntity } from '../member/entity/member.entity';
 import { ApiHttpResponse } from '../common/lib/swagger/decorator/api-http-response.decorator';
 import { ApiHttpExceptionResponse } from '../common/lib/swagger/decorator/api-http-exception-response.decorator';
 import { EXCEPTION_RESPONSE } from '../common/exception/constant';
+import { UseController } from '../common/decorator/use-controller.decorator';
 
 @ApiTags('experience')
-@UseFilters(HttpExceptionFilter)
-@UseInterceptors(HttpResponseInterceptor)
-@Controller('experience')
+@UseController('experience')
 export class ExperienceController {
   constructor(private readonly experienceService: ExperienceService) {}
 

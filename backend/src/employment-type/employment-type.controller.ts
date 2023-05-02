@@ -1,22 +1,15 @@
-import {
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  UseFilters,
-  UseInterceptors,
-} from '@nestjs/common';
-import { HttpResponseInterceptor } from '../common/interceptor/http-response.interceptor';
-import { HttpExceptionFilter } from '../common/exception/exception-filter/http-exception-filter';
+import { Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { EmploymentTypeDto } from './dto/employment-type.dto';
 import { EmploymentTypeService } from './employment-type.service';
 import { ApiHttpResponse } from '../common/lib/swagger/decorator/api-http-response.decorator';
+import { EntitySearchQueryDto } from '../common/dto/entity-search.dto';
+import { SearchQueryPipe } from '../common/decorator/search-query.decorator';
+import { UseController } from '../common/decorator/use-controller.decorator';
+import { ApiHttpExceptionResponse } from '../common/lib/swagger/decorator/api-http-exception-response.decorator';
 
 @ApiTags('employment-type')
-@UseFilters(HttpExceptionFilter)
-@UseInterceptors(HttpResponseInterceptor)
-@Controller('employment-type')
+@UseController('employment-type')
 export class EmploymentTypeController {
   constructor(private readonly employmentTypeService: EmploymentTypeService) {}
 
@@ -27,9 +20,13 @@ export class EmploymentTypeController {
       type: [EmploymentTypeDto],
     },
   ])
+  @ApiHttpExceptionResponse(HttpStatus.BAD_REQUEST)
   @HttpCode(HttpStatus.OK)
   @Get()
-  async getEmploymentTypes(): Promise<EmploymentTypeDto[]> {
-    return this.employmentTypeService.getEmploymentTypes();
+  async getEmploymentTypes(
+    @Query(new SearchQueryPipe(['name']))
+    searchQuery?: EntitySearchQueryDto,
+  ): Promise<EmploymentTypeDto[]> {
+    return this.employmentTypeService.getEmploymentTypes(searchQuery);
   }
 }
