@@ -4,9 +4,11 @@ import { EmploymentTypeDto } from './dto/employment-type.dto';
 import { EmploymentTypeService } from './employment-type.service';
 import { ApiHttpResponse } from '../common/lib/swagger/decorator/api-http-response.decorator';
 import { EntitySearchQueryDto } from '../common/dto/entity-search.dto';
-import { SearchQueryPipe } from '../common/decorator/search-query.decorator';
+import { SearchQueryPipe } from '../common/pipe/search-query-pipe';
 import { UseController } from '../common/decorator/use-controller.decorator';
 import { ApiHttpExceptionResponse } from '../common/lib/swagger/decorator/api-http-exception-response.decorator';
+import { SortQueryPipe } from '../common/pipe/sort-query-pipe';
+import { EntitySortQueryDto } from '../common/dto/entity-sort.dto';
 
 @ApiTags('employment-type')
 @UseController('employment-type')
@@ -24,9 +26,14 @@ export class EmploymentTypeController {
   @HttpCode(HttpStatus.OK)
   @Get()
   async getEmploymentTypes(
+    @Query(new SortQueryPipe(['name'], { required: true }))
+    sortQuery: EntitySortQueryDto,
     @Query(new SearchQueryPipe(['name']))
     searchQuery?: EntitySearchQueryDto,
   ): Promise<EmploymentTypeDto[]> {
-    return this.employmentTypeService.getEmploymentTypes(searchQuery);
+    return this.employmentTypeService.getEmploymentTypes(
+      sortQuery,
+      searchQuery,
+    );
   }
 }
