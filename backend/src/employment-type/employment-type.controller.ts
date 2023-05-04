@@ -26,8 +26,8 @@ export class EmploymentTypeController {
   @HttpCode(HttpStatus.OK)
   @Get()
   async getEmploymentTypes(
-    @Query(new SortQueryPipe(['name'], { required: true }))
-    sortQuery: EntitySortQueryDto,
+    @Query(new SortQueryPipe(['name']))
+    sortQuery?: EntitySortQueryDto,
     @Query(new SearchQueryPipe(['name']))
     searchQuery?: EntitySearchQueryDto,
   ): Promise<EmploymentTypeDto[]> {

@@ -1,29 +1,39 @@
 import { PipeTransform, Injectable } from '@nestjs/common';
 import {
   EntitySearchQueryDto,
-  EntitySearchRequiredQueryDto,
+  EntitySearchValidationQueryDto,
 } from '../dto/entity-search.dto';
 import { InvalidInputException } from '../exception/custom-excpetion/invalid-input-exception';
 import { InvalidInputError } from '../error/invalid-input.error';
 import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
+import { TransformPipe } from './transform-pipe';
+
+interface SearchQueryPipeOption {
+  required?: boolean;
+}
 
 @Injectable()
-export class SearchQueryPipe implements PipeTransform {
-  constructor(private readonly allowedFields: string[]) {}
+export class SearchQueryPipe extends TransformPipe implements PipeTransform {
+  constructor(
+    private readonly allowedFields: string[],
+    private readonly options?: SearchQueryPipeOption,
+  ) {
+    super();
+  }
 
-  async transform(value: EntitySearchQueryDto | EntitySearchRequiredQueryDto) {
-    if (value instanceof EntitySearchQueryDto) {
-      const errors = await validate(
-        plainToInstance(EntitySearchRequiredQueryDto, value),
-      );
-      if (errors.length) {
-        return undefined;
-      }
+  async transform(value: any): Promise<EntitySearchQueryDto | undefined> {
+    const instance = await this.transformWithRequired(
+      plainToInstance(EntitySearchValidationQueryDto, value),
+      this.options?.required,
+    );
+
+    if (!instance) {
+      return undefined;
     }
-    this.validateAllowField(value.field);
 
-    return value;
+    this.validateAllowField(instance.field);
+
+    return instance;
   }
 
   private validateAllowField(fields: string[]) {

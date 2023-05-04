@@ -2,35 +2,34 @@ import { PipeTransform, Injectable } from '@nestjs/common';
 import { InvalidInputException } from '../exception/custom-excpetion/invalid-input-exception';
 import { InvalidInputError } from '../error/invalid-input.error';
 import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
 import {
   EntitySortQueryDto,
   EntitySortValidationQueryDto,
 } from '../dto/entity-sort.dto';
 import { SortOrder } from '../type/common.type';
-import { validateOrFail } from '../lib/validation';
+import { TransformPipe } from './transform-pipe';
 
 interface SortQueryPipeOption {
   required?: boolean;
 }
 
 @Injectable()
-export class SortQueryPipe implements PipeTransform {
+export class SortQueryPipe extends TransformPipe implements PipeTransform {
   constructor(
     private readonly allowedFields: string[],
-    private readonly option?: SortQueryPipeOption,
-  ) {}
+    private readonly options?: SortQueryPipeOption,
+  ) {
+    super();
+  }
 
   async transform(value: any): Promise<EntitySortQueryDto | undefined> {
-    const instance = plainToInstance(EntitySortValidationQueryDto, value);
+    const instance = await this.transformWithRequired(
+      plainToInstance(EntitySortValidationQueryDto, value),
+      this.options?.required,
+    );
 
-    if (this.option?.required) {
-      await validateOrFail(instance);
-    } else {
-      const errors = await validate(instance);
-      if (errors.length) {
-        return undefined;
-      }
+    if (!instance) {
+      return undefined;
     }
 
     this.validateAllowField(instance.sort);
