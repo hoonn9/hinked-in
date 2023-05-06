@@ -111,7 +111,11 @@ export class ExperienceEntity extends DateColumnEntity {
   })
   @IsDate()
   @Type(() => Date)
-  @Column({ type: 'timestamp with time zone', name: 'start_date' })
+  @Column({
+    type: 'timestamp with time zone',
+    name: 'start_date',
+    precision: 3,
+  })
   startDate: Date;
 
   @ApiDateProperty({
@@ -124,6 +128,7 @@ export class ExperienceEntity extends DateColumnEntity {
   @Column({
     type: 'timestamp with time zone',
     name: 'end_date',
+    precision: 3,
     nullable: true,
   })
   endDate: Date | null;

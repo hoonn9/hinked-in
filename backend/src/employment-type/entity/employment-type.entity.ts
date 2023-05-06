@@ -1,9 +1,10 @@
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 import { genUUID } from '../../common/lib/uuid';
 import { EmploymentTypeConstructorParams } from '../typing/employment-type.interface';
+import { DateColumnEntity } from '../../common/entity/date-column.entity';
 
 @Entity({ name: 'employment_type' })
-export class EmploymentTypeEntity {
+export class EmploymentTypeEntity extends DateColumnEntity {
   @PrimaryGeneratedColumn('uuid', {
     name: 'id',
     primaryKeyConstraintName: 'employment_type_pkey',

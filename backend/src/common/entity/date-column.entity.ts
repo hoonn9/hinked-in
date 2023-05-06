@@ -9,6 +9,7 @@ export abstract class DateColumnEntity {
   @CreateDateColumn({
     type: 'timestamp with time zone',
     name: 'create_date',
+    precision: 3,
   })
   readonly createDate: Date;
 
@@ -20,12 +21,14 @@ export abstract class DateColumnEntity {
   @UpdateDateColumn({
     type: 'timestamp with time zone',
     name: 'update_date',
+    precision: 3,
   })
   updateDate: Date;
 
   @DeleteDateColumn({
     type: 'timestamp with time zone',
     name: 'delete_date',
+    precision: 3,
   })
   deleteDate: Date | null = null;
 }
