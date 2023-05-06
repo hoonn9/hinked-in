@@ -17,7 +17,7 @@ interface ExampleOption {
   type?: boolean | ApiPropertyOptions['type'];
   title: string;
   description?: string;
-  generic?: Type;
+  generic?: { field: string; type: Type };
 }
 
 export const ApiHttpResponse = (
@@ -61,7 +61,15 @@ const createExamples = (options: ExampleOption[]) => {
   options.forEach((option) => {
     const responseExample = transformDTOToExample(HttpResponseDto);
 
-    responseExample.data = getExampleByType(option.type);
+    let data = getExampleByType(option.type);
+
+    if (option.generic) {
+      const genericExample = transformDTOToExample(option.generic.type);
+      genericExample[option.generic.field] = data;
+      data = genericExample;
+    }
+
+    responseExample.data = data;
     responseExample.code = HTTP_RESPONSE_SUCCESS_CODE;
 
     result[option.title] = {
@@ -76,12 +84,17 @@ const createExamples = (options: ExampleOption[]) => {
 const getModels = (options: ExampleOption[]) => [
   ...new Set(
     [
-      ...options.map((option) => {
+      ...options.reduce((result, option) => {
         if (Array.isArray(option.type)) {
-          return option.type[0];
+          result.push(option.type[0]);
+        } else {
+          result.push(option.type);
         }
-        return option.type;
-      }),
+        if (option.generic) {
+          result.push(option.generic.type);
+        }
+        return result;
+      }, [] as ExampleOption['type'][]),
     ].filter((type): type is Type => type != null),
   ),
 ];

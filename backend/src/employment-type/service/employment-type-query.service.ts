@@ -7,6 +7,8 @@ import { EntitySearchOption } from '../../common/interface/entity-search.interfa
 import { WhereParams } from '../../database/typeorm/interface/where.interface';
 import { CoreSearchableQueryService } from '../../common/service/core-searchable-query.service';
 import { EntitySortOption } from '../../common/interface/entity-sort.interface';
+import { EntityPaginationOption } from '../../common/interface/entity-pagination.interface';
+import { EmploymentTypeCursor } from '../typing/employment-type-cursor.type';
 
 @Injectable()
 export class EmploymentTypeQueryService extends CoreSearchableQueryService<EmploymentTypeEntity> {
@@ -18,6 +20,7 @@ export class EmploymentTypeQueryService extends CoreSearchableQueryService<Emplo
   }
 
   async findMany(
+    pagination: EntityPaginationOption,
     search?: EntitySearchOption,
     sortOptions?: EntitySortOption[],
     manager?: EntityManager,
@@ -29,19 +32,20 @@ export class EmploymentTypeQueryService extends CoreSearchableQueryService<Emplo
     }
 
     if (sortOptions) {
-      this.getSortQuery(qb, sortOptions);
+      this.applySort(qb, sortOptions);
     }
 
-    return qb.getMany();
-  }
+    if (pagination) {
+      await this.applyPagination(
+        qb,
+        EmploymentTypeCursor,
+        pagination,
+        sortOptions,
+      );
+    }
 
-  private getSortQuery(
-    qb: SelectQueryBuilder<EmploymentTypeEntity>,
-    sortOptions: EntitySortOption[],
-  ) {
-    sortOptions.forEach((sortOption) => {
-      qb.addOrderBy(sortOption.field, sortOption.order);
-    });
+    const result = await qb.getMany();
+    return this.getPaginationResult(result, pagination, sortOptions);
   }
 
   protected makeSearchWhereParams(

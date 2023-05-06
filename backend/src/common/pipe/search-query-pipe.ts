@@ -23,7 +23,9 @@ export class SearchQueryPipe extends TransformPipe implements PipeTransform {
 
   async transform(value: any): Promise<EntitySearchQueryDto | undefined> {
     const instance = await this.transformWithRequired(
-      plainToInstance(EntitySearchValidationQueryDto, value),
+      plainToInstance(EntitySearchValidationQueryDto, value, {
+        excludeExtraneousValues: true,
+      }),
       this.options?.required,
     );
 
@@ -32,6 +34,8 @@ export class SearchQueryPipe extends TransformPipe implements PipeTransform {
     }
 
     this.validateAllowField(instance.field);
+
+    Object.setPrototypeOf(instance, EntitySearchQueryDto.prototype);
 
     return instance;
   }

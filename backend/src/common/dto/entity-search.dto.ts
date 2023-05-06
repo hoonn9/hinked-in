@@ -1,12 +1,15 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsArray, IsString, Length } from 'class-validator';
 import { TransformToArray } from '../decorator/transform-decorator/transform-to-array.decorator';
+import { Expose } from 'class-transformer';
 
 export class EntitySearchValidationQueryDto {
+  @Expose()
   @Length(1, 256)
   @IsString()
   keyword: string;
 
+  @Expose()
   @IsArray()
   @IsString({ each: true })
   @TransformToArray()

@@ -2,8 +2,10 @@ import { IsString } from 'class-validator';
 import { TransformToArray } from '../decorator/transform-decorator/transform-to-array.decorator';
 import { EntitySortOption } from '../interface/entity-sort.interface';
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Expose } from 'class-transformer';
 
 export class EntitySortValidationQueryDto {
+  @Expose()
   @IsString({
     each: true,
   })

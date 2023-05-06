@@ -7,6 +7,10 @@ import { AlreadyExistError } from '../common/error/already-exist.error';
 import { EmploymentTypeDto } from './dto/employment-type.dto';
 import { EntitySearchQueryDto } from '../common/dto/entity-search.dto';
 import { EntitySortQueryDto } from '../common/dto/entity-sort.dto';
+import {
+  PaginationQueryDto,
+  PaginationResponseDto,
+} from '../common/dto/pagination.dto';
 
 @Injectable()
 export class EmploymentTypeService {
@@ -15,14 +19,19 @@ export class EmploymentTypeService {
   ) {}
 
   async getEmploymentTypes(
+    paginationQuery: PaginationQueryDto,
     sortQuery?: EntitySortQueryDto,
     searchQuery?: EntitySearchQueryDto,
-  ) {
-    const entities = await this.employmentTypeQueryService.findMany(
+  ): Promise<PaginationResponseDto<EmploymentTypeDto>> {
+    const paginationResult = await this.employmentTypeQueryService.findMany(
+      paginationQuery,
       searchQuery,
       sortQuery?.options,
     );
-    return entities.map(EmploymentTypeDto.fromEntity);
+    return {
+      list: paginationResult.list.map(EmploymentTypeDto.fromEntity),
+      metadata: { nextCursor: paginationResult.nextCursor },
+    };
   }
 
   async addEmploymentType(

@@ -24,7 +24,9 @@ export class SortQueryPipe extends TransformPipe implements PipeTransform {
 
   async transform(value: any): Promise<EntitySortQueryDto | undefined> {
     const instance = await this.transformWithRequired(
-      plainToInstance(EntitySortValidationQueryDto, value),
+      plainToInstance(EntitySortValidationQueryDto, value, {
+        excludeExtraneousValues: true,
+      }),
       this.options?.required,
     );
 
@@ -42,9 +44,9 @@ export class SortQueryPipe extends TransformPipe implements PipeTransform {
       };
     });
 
-    return {
+    return plainToInstance(EntitySortQueryDto, {
       options,
-    };
+    });
   }
 
   private convertToSortOrder(orderQuery: string): SortOrder {

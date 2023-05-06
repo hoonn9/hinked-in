@@ -5,7 +5,7 @@ export class CustomQueryBuilder<
   T extends ObjectLiteral,
 > extends SelectQueryBuilder<T> {
   andBracketWheres(wheres: WhereParams[]) {
-    this.andWhere(
+    return this.andWhere(
       new Brackets((subQb) => {
         wheres.forEach((where) => {
           subQb.orWhere(where.where, where.parameters);
