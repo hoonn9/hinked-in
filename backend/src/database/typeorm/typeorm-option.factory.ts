@@ -30,11 +30,16 @@ export class TypeormOptionFactory implements TypeOrmOptionsFactory {
 
   private testOptions(): TypeOrmModuleOptions {
     return {
-      type: 'sqlite',
-      database: ':memory:',
+      type: 'postgres',
+      host: this.configService.get('DATABASE_HOST'),
+      port: this.configService.get('DATABASE_PORT'),
+      username: this.configService.get('DATABASE_USERNAME'),
+      password: this.configService.get('DATABASE_PASSWORD'),
+      database: this.configService.get('DATABASE_NAME'),
       entities: [`${__dirname}../../../**/*.entity{.ts,.js}`],
+      useUTC: true,
       synchronize: true,
-      logging: 'all',
+      logging: ['query', 'error'],
     };
   }
 }

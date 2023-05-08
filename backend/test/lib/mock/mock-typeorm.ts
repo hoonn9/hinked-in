@@ -1,32 +1,5 @@
-import {
-  ColumnOptions,
-  EntityManager,
-  ObjectLiteral,
-  Repository,
-} from 'typeorm';
+import { EntityManager, ObjectLiteral, Repository } from 'typeorm';
 import { mockAllFields } from './util';
-
-export const MockTypeormDateColumns = () => {
-  jest.mock('typeorm', () => {
-    const plainTypeOrm = jest.requireActual('typeorm');
-
-    return {
-      ...plainTypeOrm,
-      CreateDateColumn: (options: ColumnOptions) => {
-        options.type = 'datetime';
-        return plainTypeOrm.CreateDateColumn(options);
-      },
-      UpdateDateColumn: (options: ColumnOptions) => {
-        options.type = 'datetime';
-        return plainTypeOrm.UpdateDateColumn(options);
-      },
-      DeleteDateColumn: (options: ColumnOptions) => {
-        options.type = 'datetime';
-        return plainTypeOrm.DeleteDateColumn(options);
-      },
-    };
-  });
-};
 
 export const mockEntityManager = () => mockAllFields(EntityManager);
 
