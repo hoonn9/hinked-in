@@ -39,7 +39,7 @@ export class TypeormOptionFactory implements TypeOrmOptionsFactory {
       entities: [`${__dirname}../../../**/*.entity{.ts,.js}`],
       useUTC: true,
       synchronize: true,
-      logging: ['query', 'error'],
+      logging: ['error'],
     };
   }
 }
