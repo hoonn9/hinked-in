@@ -6,20 +6,23 @@ import * as path from 'path';
 import { EmploymentTypeSeed } from '../../database/seed/type/employment-type.seed';
 import { parseArrayByJSONFile } from '../../common/lib/parse';
 
+const DEFAULT_FILE_PATH = path.join(
+  __dirname,
+  '../../database/seed/resource',
+  'employment-type.json',
+);
+
 @Injectable()
 export class EmploymentTypeSeedService extends SeederService {
-  private readonly filePath = path.join(
-    __dirname,
-    '../../database/seed/resource',
-    'employment-type.json',
-  );
-
   constructor() {
     super();
   }
 
-  async run(manager: EntityManager): Promise<void> {
-    const seeds = await parseArrayByJSONFile(EmploymentTypeSeed, this.filePath);
+  async runFromJSONFile(
+    manager: EntityManager,
+    filePath = DEFAULT_FILE_PATH,
+  ): Promise<void> {
+    const seeds = await parseArrayByJSONFile(EmploymentTypeSeed, filePath);
 
     await manager.upsert(EmploymentTypeEntity, seeds, {
       conflictPaths: ['name'],

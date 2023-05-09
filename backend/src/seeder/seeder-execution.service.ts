@@ -19,7 +19,7 @@ export class SeederExecutionService extends TransactionService {
     try {
       await Promise.all(
         this.getSeederServices().map(async (service) => {
-          return service.run(queryRunner.manager);
+          return service.runFromJSONFile(queryRunner.manager);
         }),
       );
 
@@ -29,7 +29,7 @@ export class SeederExecutionService extends TransactionService {
     }
   }
 
-  private getSeederServices() {
+  private getSeederServices(): SeederService[] {
     return this.discoveryService
       .getProviders()
       .filter((wrapper) => wrapper.isDependencyTreeStatic())
