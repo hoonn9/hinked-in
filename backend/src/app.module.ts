@@ -7,6 +7,7 @@ import { DatabaseModule } from './database/database.module';
 import { validateConfig } from './common/config/config-validator';
 import { ExperienceModule } from './experience/experience.module';
 import { envFilePath } from './common/config/env-file-path';
+import { IndustryModule } from './industry/industry.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { envFilePath } from './common/config/env-file-path';
     AuthModule,
     MemberModule,
     ExperienceModule,
+    IndustryModule,
   ],
   controllers: [AppController],
 })
