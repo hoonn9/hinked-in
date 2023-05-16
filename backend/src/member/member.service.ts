@@ -15,6 +15,10 @@ export class MemberService {
     private readonly memberQueryService: MemberQueryService,
   ) {}
 
+  async getMember(memberId: string, manager?: EntityManager) {
+    return this.memberQueryService.findOneOrFail(memberId, manager);
+  }
+
   async addMember(
     createMemberDto: CreateMemberBodyDto,
     manager: EntityManager,

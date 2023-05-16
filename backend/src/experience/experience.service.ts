@@ -6,6 +6,7 @@ import { EntityManager } from 'typeorm';
 import { MemberEntity } from '../member/entity/member.entity';
 import { CompanyQueryService } from '../company/service/company-query.service';
 import { IndustryQueryService } from '../industry/service/industry-query.service';
+import { ExperienceQueryService } from './service/experience-query.service';
 
 @Injectable()
 export class ExperienceService {
@@ -13,7 +14,14 @@ export class ExperienceService {
     private readonly employmentTypeQueryService: EmploymentTypeQueryService,
     private readonly companyQueryService: CompanyQueryService,
     private readonly industryQueryService: IndustryQueryService,
+    private readonly experienceQueryService: ExperienceQueryService,
   ) {}
+
+  async getMemberExperiences(
+    member: MemberEntity,
+  ): Promise<ExperienceEntity[]> {
+    return this.experienceQueryService.findByMemberId(member.id);
+  }
 
   async addExperience(
     input: CreateExperienceBodyDto,

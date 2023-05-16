@@ -6,6 +6,7 @@ import { ExperienceService } from './experience.service';
 import { EmploymentTypeModule } from '../employment-type/employment-type.module';
 import { CompanyModule } from '../company/company.module';
 import { IndustryModule } from '../industry/industry.module';
+import { ExperienceQueryService } from './service/experience-query.service';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { IndustryModule } from '../industry/industry.module';
     TypeOrmModule.forFeature([ExperienceEntity]),
   ],
   controllers: [ExperienceController],
-  providers: [ExperienceService],
+  providers: [ExperienceService, ExperienceQueryService],
+  exports: [ExperienceService],
 })
 export class ExperienceModule {}
