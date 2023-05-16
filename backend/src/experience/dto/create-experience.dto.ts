@@ -1,7 +1,7 @@
 import { PickType } from '@nestjs/swagger';
-import { ExperienceEntity } from '../entity/experience.entity';
+import { ExperienceDto } from './experience.dto';
 
-export class CreateExperienceBodyDto extends PickType(ExperienceEntity, [
+export class CreateExperienceBodyDto extends PickType(ExperienceDto, [
   'title',
   'description',
   'headline',

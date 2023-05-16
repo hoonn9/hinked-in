@@ -7,6 +7,7 @@ import { MemberEntity } from '../member/entity/member.entity';
 import { CompanyQueryService } from '../company/service/company-query.service';
 import { IndustryQueryService } from '../industry/service/industry-query.service';
 import { ExperienceQueryService } from './service/experience-query.service';
+import { ExperienceDto } from './dto/experience.dto';
 
 @Injectable()
 export class ExperienceService {
@@ -17,10 +18,11 @@ export class ExperienceService {
     private readonly experienceQueryService: ExperienceQueryService,
   ) {}
 
-  async getMemberExperiences(
-    member: MemberEntity,
-  ): Promise<ExperienceEntity[]> {
-    return this.experienceQueryService.findByMemberId(member.id);
+  async getMemberExperiences(member: MemberEntity): Promise<ExperienceDto[]> {
+    const experiences = await this.experienceQueryService.findByMemberId(
+      member.id,
+    );
+    return experiences.map(ExperienceDto.fromEntity);
   }
 
   async addExperience(

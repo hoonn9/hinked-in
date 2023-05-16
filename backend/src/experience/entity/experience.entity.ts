@@ -10,12 +10,6 @@ import {
 import { DateColumnEntity } from '../../common/entity/date-column.entity';
 import { genUUID } from '../../common/lib/uuid';
 import { EmploymentTypeEntity } from '../../employment-type/entity/employment-type.entity';
-import { ApiUUIDProperty } from '../../common/lib/swagger/decorator/api-uuid-property.decorator';
-import { IsID } from '../../common/decorator/validate-decorator/is-id.decorator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsDate, IsOptional, IsString } from 'class-validator';
-import { ApiDateProperty } from '../../common/lib/swagger/decorator/api-date-property.decorator';
-import { Type } from 'class-transformer';
 import { ExperienceConstructorParams } from '../typing/experience.type';
 import { MemberEntity } from '../../member/entity/member.entity';
 import { CompanyEntity } from '../../company/entity/company.entity';
@@ -25,18 +19,12 @@ import { IndustryEntity } from '../../industry/entity/industry.entity';
   name: 'experience',
 })
 export class ExperienceEntity extends DateColumnEntity {
-  @ApiUUIDProperty()
-  @IsID()
   @PrimaryGeneratedColumn('uuid', {
     name: 'id',
     primaryKeyConstraintName: 'experience_pkey',
   })
   readonly id: string = genUUID();
 
-  @ApiProperty({
-    name: 'title',
-  })
-  @IsString()
   @Column({ type: 'varchar', name: 'title', length: 100 })
   title: string;
 
@@ -48,8 +36,6 @@ export class ExperienceEntity extends DateColumnEntity {
   })
   employmentType: EmploymentTypeEntity | null;
 
-  @ApiUUIDProperty()
-  @IsID()
   @RelationId((entity: ExperienceEntity) => entity.employmentType)
   @Column({ type: 'uuid', name: 'employment_type_id' })
   employmentTypeId: string;
@@ -62,17 +48,10 @@ export class ExperienceEntity extends DateColumnEntity {
   })
   company: CompanyEntity | null;
 
-  @ApiUUIDProperty()
-  @IsID()
   @RelationId((entity: ExperienceEntity) => entity.company)
   @Column({ type: 'uuid', name: 'company_id' })
   companyId: string;
 
-  @ApiProperty({
-    name: 'location',
-    type: String,
-  })
-  @IsString()
   @Column({ type: 'text', name: 'location' })
   location: string;
 
@@ -84,33 +63,16 @@ export class ExperienceEntity extends DateColumnEntity {
   })
   industry: IndustryEntity | null;
 
-  @ApiUUIDProperty()
-  @IsID()
   @RelationId((entity: ExperienceEntity) => entity.industry)
   @Column({ type: 'uuid', name: 'industry_id' })
   industryId: string;
 
-  @ApiPropertyOptional({
-    name: 'description',
-    type: String,
-  })
-  @IsOptional()
-  @IsString()
   @Column({ type: 'text', name: 'description', nullable: true })
   description: string | null;
 
-  @ApiProperty({
-    name: 'headline',
-    type: String,
-  })
   @Column({ type: 'varchar', name: 'headline', length: 300 })
   headline: string;
 
-  @ApiDateProperty({
-    name: 'startDate',
-  })
-  @IsDate()
-  @Type(() => Date)
   @Column({
     type: 'timestamp with time zone',
     name: 'start_date',
@@ -118,13 +80,6 @@ export class ExperienceEntity extends DateColumnEntity {
   })
   startDate: Date;
 
-  @ApiDateProperty({
-    name: 'endDate',
-    isOptional: true,
-  })
-  @IsOptional()
-  @IsDate()
-  @Type(() => Date)
   @Column({
     type: 'timestamp with time zone',
     name: 'end_date',
@@ -143,7 +98,6 @@ export class ExperienceEntity extends DateColumnEntity {
   })
   member: MemberEntity | null;
 
-  @IsID()
   @Index('experience_ix_member_id')
   @RelationId((entity: ExperienceEntity) => entity.member)
   @Column({ type: 'uuid', name: 'member_id' })
