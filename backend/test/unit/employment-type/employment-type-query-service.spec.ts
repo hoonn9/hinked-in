@@ -2,15 +2,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { EmploymentTypeQueryService } from '../../../src/employment-type/service/employment-type-query.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { EmploymentTypeEntity } from '../../../src/employment-type/entity/employment-type.entity';
-import { Repository } from 'typeorm';
 import { genUUID } from '../../../src/common/lib/uuid';
 import { EntityNotExistException } from '../../../src/common/exception/custom-excpetion/entity-not-exist-exception';
 import { EmploymentTypeFixture } from '../../fixture/employment-type/employment-type-fixture';
-import { mockRepository } from '../../lib/mock/mock-typeorm';
+import {
+  mockCustomQueryBuilder,
+  mockRepository,
+} from '../../lib/mock/mock-typeorm';
 
 describe('EmploymentTypeQueryService', () => {
   let employmentTypeQueryService: EmploymentTypeQueryService;
-  let employmentTypeRepository: Repository<EmploymentTypeEntity>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -26,9 +27,6 @@ describe('EmploymentTypeQueryService', () => {
     employmentTypeQueryService = module.get<EmploymentTypeQueryService>(
       EmploymentTypeQueryService,
     );
-    employmentTypeRepository = module.get(
-      getRepositoryToken(EmploymentTypeEntity),
-    );
   });
 
   describe('findOneByIdOrFail', () => {
@@ -37,8 +35,14 @@ describe('EmploymentTypeQueryService', () => {
       const mockEmploymentType =
         EmploymentTypeFixture.createEmploymentTypeEntity();
 
+      const customQueryBuilder = mockCustomQueryBuilder<EmploymentTypeEntity>();
+
+      jest
+        .spyOn(employmentTypeQueryService, 'createQueryBuilder')
+        .mockReturnValue(customQueryBuilder);
+
       const getOneFn = jest
-        .spyOn(employmentTypeRepository.createQueryBuilder(), 'getOne')
+        .spyOn(customQueryBuilder, 'getOne')
         .mockResolvedValue(mockEmploymentType);
 
       // When & Then
@@ -51,8 +55,14 @@ describe('EmploymentTypeQueryService', () => {
 
     it('존재하지 않는 ID일 경우 EntityNotExistException을 발생시킨다.', async () => {
       // Given
+      const customQueryBuilder = mockCustomQueryBuilder<EmploymentTypeEntity>();
+
+      jest
+        .spyOn(employmentTypeQueryService, 'createQueryBuilder')
+        .mockReturnValue(customQueryBuilder);
+
       const getOneFn = jest
-        .spyOn(employmentTypeRepository.createQueryBuilder(), 'getOne')
+        .spyOn(customQueryBuilder, 'getOne')
         .mockResolvedValue(null);
 
       // When & Then
@@ -70,8 +80,14 @@ describe('EmploymentTypeQueryService', () => {
       const mockEmploymentType =
         EmploymentTypeFixture.createEmploymentTypeEntity();
 
+      const customQueryBuilder = mockCustomQueryBuilder<EmploymentTypeEntity>();
+
+      jest
+        .spyOn(employmentTypeQueryService, 'createQueryBuilder')
+        .mockReturnValue(customQueryBuilder);
+
       const getExistsFn = jest
-        .spyOn(employmentTypeRepository.createQueryBuilder(), 'getExists')
+        .spyOn(customQueryBuilder, 'getExists')
         .mockResolvedValue(true);
 
       // When & Then

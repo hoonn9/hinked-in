@@ -121,7 +121,7 @@ describe('EmploymentTypeController (Integration Test)', () => {
 
     it('NextCursor는 이전 쿼리의 Sort 조건에 해당하는 필드와 마지막 원소 값을 매핑한 상태여야한다.', async () => {
       // Given
-      const size = 2;
+      const size = 3;
       const entities: EmploymentTypeEntity[] = [];
 
       for (let i = 1; i <= size; i++) {
@@ -275,7 +275,6 @@ describe('EmploymentTypeController (Integration Test)', () => {
         for (let j = 0; j < paginationQuery.limit; j++) {
           const entityIndex = startIndex - j;
 
-          console.log(queryResult.list[j], entities[entityIndex]);
           expect(queryResult.list[j]).toEqual(
             EmploymentTypeDto.fromEntity(entities[entityIndex]),
           );

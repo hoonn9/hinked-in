@@ -3,7 +3,10 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { genUUID } from '../../../src/common/lib/uuid';
 import { EntityNotExistException } from '../../../src/common/exception/custom-excpetion/entity-not-exist-exception';
-import { mockRepository } from '../../lib/mock/mock-typeorm';
+import {
+  mockCustomQueryBuilder,
+  mockRepository,
+} from '../../lib/mock/mock-typeorm';
 import { IndustryQueryService } from '../../../src/industry/service/industry-query.service';
 import { IndustryEntity } from '../../../src/industry/entity/industry.entity';
 import { IndustryFixture } from '../../fixture/industry/industry-fixture';
@@ -33,8 +36,13 @@ describe('IndustryQueryService', () => {
       // Given
       const mockIndustry = IndustryFixture.createIndustryEntity();
 
+      const customQueryBuilder = mockCustomQueryBuilder<IndustryEntity>();
+      jest
+        .spyOn(industryQueryService, 'createQueryBuilder')
+        .mockReturnValue(customQueryBuilder);
+
       const getOneFn = jest
-        .spyOn(industryRepository.createQueryBuilder(), 'getOne')
+        .spyOn(customQueryBuilder, 'getOne')
         .mockResolvedValue(mockIndustry);
 
       // When & Then
@@ -47,8 +55,13 @@ describe('IndustryQueryService', () => {
 
     it('존재하지 않는 ID일 경우 EntityNotExistException을 발생시킨다.', async () => {
       // Given
+      const customQueryBuilder = mockCustomQueryBuilder<IndustryEntity>();
+      jest
+        .spyOn(industryQueryService, 'createQueryBuilder')
+        .mockReturnValue(customQueryBuilder);
+
       const getOneFn = jest
-        .spyOn(industryRepository.createQueryBuilder(), 'getOne')
+        .spyOn(customQueryBuilder, 'getOne')
         .mockResolvedValue(null);
 
       // When & Then

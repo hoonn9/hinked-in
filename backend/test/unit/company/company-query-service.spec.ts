@@ -2,7 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CompanyQueryService } from '../../../src/company/service/company-query.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { CompanyEntity } from '../../../src/company/entity/company.entity';
-import { mockRepository } from '../../lib/mock/mock-typeorm';
+import {
+  mockCustomQueryBuilder,
+  mockRepository,
+} from '../../lib/mock/mock-typeorm';
 import { Repository } from 'typeorm';
 import { CompanyFixture } from '../../fixture/company/company-fixture';
 import { EntityNotExistException } from '../../../src/common/exception/custom-excpetion/entity-not-exist-exception';
@@ -31,9 +34,14 @@ describe('CompanyQueryService', () => {
   describe('findOneByIdOrFail', () => {
     it('성공 케이스', async () => {
       const mockCompany = CompanyFixture.createCompanyEntity();
+      const customQueryBuilder = mockCustomQueryBuilder<CompanyEntity>();
+
+      jest
+        .spyOn(companyQueryService, 'createQueryBuilder')
+        .mockReturnValue(customQueryBuilder);
 
       const getOneFn = jest
-        .spyOn(companyRepository.createQueryBuilder(), 'getOne')
+        .spyOn(customQueryBuilder, 'getOne')
         .mockResolvedValueOnce(mockCompany);
 
       await expect(
@@ -45,9 +53,14 @@ describe('CompanyQueryService', () => {
 
     it('존재하지 않는 ID일 경우 EntityNotExistException 예외를 발생시킨다.', async () => {
       const mockCompany = CompanyFixture.createCompanyEntity();
+      const createQueryBuilder = mockCustomQueryBuilder<CompanyEntity>();
+
+      jest
+        .spyOn(companyQueryService, 'createQueryBuilder')
+        .mockReturnValue(createQueryBuilder);
 
       const getOneFn = jest
-        .spyOn(companyRepository.createQueryBuilder(), 'getOne')
+        .spyOn(createQueryBuilder, 'getOne')
         .mockResolvedValueOnce(null);
 
       await expect(

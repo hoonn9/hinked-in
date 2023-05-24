@@ -11,6 +11,7 @@ import { mockEntityManager } from '../../lib/mock/mock-typeorm';
 import { EntityNotExistException } from '../../../src/common/exception/custom-excpetion/entity-not-exist-exception';
 import { IndustryFixture } from '../../fixture/industry/industry-fixture';
 import { IndustryQueryService } from '../../../src/industry/service/industry-query.service';
+import { ExperienceQueryService } from '../../../src/experience/service/experience-query.service';
 
 describe('AddExperience UseCase', () => {
   let experienceService: ExperienceService;
@@ -28,6 +29,7 @@ describe('AddExperience UseCase', () => {
     const mockIndustryQueryService = {
       findOneByIdOrFail: jest.fn(),
     };
+    const mockExperienceQueryService = {};
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -43,6 +45,10 @@ describe('AddExperience UseCase', () => {
         {
           provide: IndustryQueryService,
           useValue: mockIndustryQueryService,
+        },
+        {
+          provide: ExperienceQueryService,
+          useValue: mockExperienceQueryService,
         },
       ],
     }).compile();
