@@ -7,6 +7,6 @@ export const IsPassword = () =>
     IsString,
     Matches(passwordRegex, {
       message:
-        '비밀번호는 최소 8자이상으로 숫자, 특문 1자 이상, 영문은 2자 이상 사용해야 합니다.',
+        '최소 8자이며 최소 1개의 문자, 1개의 숫자 및 1개의 특수 문자를 포함해야 합니다.',
     }),
   );
