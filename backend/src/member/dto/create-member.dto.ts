@@ -1,10 +1,10 @@
-import { IsString, Length } from 'class-validator';
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { MemberEntity } from '../entity/member.entity';
 import { IsPassword } from '../../common/decorator/validate-decorator/is-password.decorator';
 import { Column } from 'typeorm';
+import { MemberDto } from './member.dto';
+import { IsString, Length } from 'class-validator';
 
-export class CreateMemberBodyDto extends PickType(MemberEntity, ['email']) {
+export class CreateMemberBodyDto extends PickType(MemberDto, ['email']) {
   @ApiProperty({
     name: 'password',
     description:

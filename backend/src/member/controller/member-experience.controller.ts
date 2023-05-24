@@ -35,11 +35,11 @@ export class MemberExperienceController {
     },
   ])
   @HttpCode(HttpStatus.OK)
-  @Get(':memberId/experiences')
+  @Get(':id/experiences')
   async getMemberExperiences(
     @Param() params: GetMemberExperienceParamDto,
   ): Promise<ExperienceDto[]> {
-    const member = await this.memberService.getMember(params.memberId);
+    const member = await this.memberService.findMember(params.id);
     return this.experienceService.getMemberExperiences(member);
   }
 }

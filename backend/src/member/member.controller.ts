@@ -23,6 +23,7 @@ import { EXCEPTION_RESPONSE } from '../common/exception/constant';
 import { FieldError } from '../common/error/field.error';
 import { ApiCommandHttpResponse } from '../common/lib/swagger/decorator/api-http-command-response.decorator';
 import { UseController } from '../common/decorator/use-controller.decorator';
+import { GetMeMemberDto } from './dto/get-me-member.dto';
 
 @ApiTags('member')
 @UseController('member')
@@ -32,16 +33,16 @@ export class MemberController {
   @ApiOperation({ description: '로그인된 멤버의 정보를 가져옵니다' })
   @ApiHttpResponse(HttpStatus.OK, [
     {
-      title: '멤버 정보 조회에 성공한 경우',
-      description: '멤버 정보 조회에 성공했을 때의 응답입니다.',
-      type: MemberEntity,
+      title: '로그인된 멤버 정보 조회에 성공한 경우',
+      description: '로그인된 멤버 정보 조회에 성공했을 때의 응답입니다.',
+      type: GetMeMemberDto,
     },
   ])
   @HttpCode(HttpStatus.OK)
   @Auth()
   @Get('me')
-  async me(@CurrentUser() member: MemberEntity): Promise<MemberEntity> {
-    return member;
+  async me(@CurrentUser() member: MemberEntity): Promise<GetMeMemberDto> {
+    return GetMeMemberDto.fromEntity(member);
   }
 
   @ApiOperation({

@@ -15,7 +15,10 @@ export class MemberService {
     private readonly memberQueryService: MemberQueryService,
   ) {}
 
-  async getMember(memberId: string, manager?: EntityManager) {
+  async findMember(
+    memberId: string,
+    manager?: EntityManager,
+  ): Promise<MemberEntity> {
     return this.memberQueryService.findOneOrFail(memberId, manager);
   }
 
