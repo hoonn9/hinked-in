@@ -6,8 +6,13 @@ import { SeederExecutionService } from './seeder-execution.service';
 import { DiscoveryModule } from '@nestjs/core';
 import { EmploymentTypeSeedService } from './service/employment-type-seed.service';
 import { IndustrySeedService } from './service/industry-seed.service';
+import { SchoolSeedService } from './service/school-seed.service';
 
-const seedServices = [EmploymentTypeSeedService, IndustrySeedService];
+const seedServices = [
+  EmploymentTypeSeedService,
+  IndustrySeedService,
+  SchoolSeedService,
+];
 
 @Module({
   imports: [

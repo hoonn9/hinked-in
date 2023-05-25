@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 import { DateColumnEntity } from '../../common/entity/date-column.entity';
 import { genUUID } from '../../common/lib/uuid';
 
@@ -10,6 +10,9 @@ export class SchoolEntity extends DateColumnEntity {
   })
   readonly id: string = genUUID();
 
+  @Index('school_ix_name', {
+    unique: true,
+  })
   @Column({ type: 'varchar', name: 'name' })
   name: string;
 }
