@@ -8,6 +8,7 @@ import { validateConfig } from './common/config/config-validator';
 import { ExperienceModule } from './experience/experience.module';
 import { envFilePath } from './common/config/env-file-path';
 import { IndustryModule } from './industry/industry.module';
+import { SchoolModule } from './school/school.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { IndustryModule } from './industry/industry.module';
     MemberModule,
     ExperienceModule,
     IndustryModule,
+    SchoolModule,
   ],
   controllers: [AppController],
 })
