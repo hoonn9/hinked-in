@@ -2,7 +2,9 @@ import {
   Column,
   Entity,
   Index,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { DateColumnEntity } from '../../common/entity/date-column.entity';
@@ -50,6 +52,22 @@ export class MemberEntity extends DateColumnEntity {
     nullable: true,
   })
   phoneNumber: string | null;
+
+  @OneToOne(() => ExperienceEntity, { nullable: true })
+  @JoinColumn({
+    name: 'current_experience_id',
+    referencedColumnName: 'id',
+    foreignKeyConstraintName: 'current_experience_id_fkey',
+  })
+  currentPosition: ExperienceEntity | null;
+
+  @OneToOne(() => ExperienceEntity, { nullable: true })
+  @JoinColumn({
+    name: 'current_industry_id',
+    referencedColumnName: 'id',
+    foreignKeyConstraintName: 'current_industry_id_fkey',
+  })
+  currentIndustry: ExperienceEntity | null;
 
   @OneToMany(() => ExperienceEntity, (experience) => experience.member)
   experiences: ExperienceEntity[] | null;
