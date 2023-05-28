@@ -9,6 +9,7 @@ import { ExperienceModule } from './experience/experience.module';
 import { envFilePath } from './common/config/env-file-path';
 import { IndustryModule } from './industry/industry.module';
 import { SchoolModule } from './school/school.module';
+import { EducationModule } from './education/education.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { SchoolModule } from './school/school.module';
     ExperienceModule,
     IndustryModule,
     SchoolModule,
+    EducationModule,
   ],
   controllers: [AppController],
 })

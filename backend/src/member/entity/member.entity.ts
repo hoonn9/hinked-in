@@ -11,6 +11,7 @@ import { DateColumnEntity } from '../../common/entity/date-column.entity';
 import { MemberConstructorParams } from '../typing/member.type';
 import { genUUID } from '../../common/lib/uuid';
 import { ExperienceEntity } from '../../experience/entity/experience.entity';
+import { EducationEntity } from '../../education/entity/education.entity';
 
 @Entity({
   name: 'member',
@@ -71,6 +72,9 @@ export class MemberEntity extends DateColumnEntity {
 
   @OneToMany(() => ExperienceEntity, (experience) => experience.member)
   experiences: ExperienceEntity[] | null;
+
+  @OneToMany(() => EducationEntity, (education) => education.member)
+  educations: EducationEntity[] | null;
 
   static new(params: MemberConstructorParams) {
     const member = new MemberEntity();

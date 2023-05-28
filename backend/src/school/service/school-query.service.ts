@@ -9,6 +9,7 @@ import { EntityPaginationOption } from '../../common/interface/entity-pagination
 import { EntitySearchOption } from '../../common/interface/entity-search.interface';
 import { EntitySortOption } from '../../common/interface/entity-sort.interface';
 import { SchoolCursor } from '../typing/school-cursor.type';
+import { EntityNotExistException } from '../../common/exception/custom-excpetion/entity-not-exist-exception';
 
 @Injectable()
 export class SchoolQueryService extends CoreSearchableQueryService<SchoolEntity> {
@@ -17,6 +18,18 @@ export class SchoolQueryService extends CoreSearchableQueryService<SchoolEntity>
     private readonly schoolRepository: Repository<SchoolEntity>,
   ) {
     super(schoolRepository);
+  }
+
+  async findOneByIdOrFail(id: string, manager?: EntityManager) {
+    const result = await this.createQueryBuilder('school', manager)
+      .where('school.id = :id', { id })
+      .getOne();
+
+    if (!result) {
+      throw new EntityNotExistException('학교');
+    }
+
+    return result;
   }
 
   async findMany(
