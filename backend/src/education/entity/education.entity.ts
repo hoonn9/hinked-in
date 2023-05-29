@@ -18,7 +18,7 @@ import { EducationConstructorParams } from '../typing/education.type';
 export class EducationEntity extends DateColumnEntity {
   @PrimaryGeneratedColumn('uuid', {
     name: 'id',
-    primaryKeyConstraintName: 'member_pkey',
+    primaryKeyConstraintName: 'education_pkey',
   })
   readonly id: string = genUUID();
 
