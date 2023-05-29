@@ -1,35 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { EntityManager, Repository, SelectQueryBuilder } from 'typeorm';
+import { EntityManager, SelectQueryBuilder } from 'typeorm';
 import { SchoolEntity } from '../entity/school.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-
-import { CoreSearchableQueryService } from '../../common/service/core-searchable-query.service';
+import { CoreSearchableQueryService } from '../../common/service/core-searchable-pagination.service';
 import { WhereParams } from '../../database/typeorm/interface/where.interface';
 import { EntityPaginationOption } from '../../common/interface/entity-pagination.interface';
 import { EntitySearchOption } from '../../common/interface/entity-search.interface';
 import { EntitySortOption } from '../../common/interface/entity-sort.interface';
 import { SchoolCursor } from '../typing/school-cursor.type';
-import { EntityNotExistException } from '../../common/exception/custom-excpetion/entity-not-exist-exception';
+import { SchoolRepository } from '../school.repository';
 
 @Injectable()
-export class SchoolQueryService extends CoreSearchableQueryService<SchoolEntity> {
-  constructor(
-    @InjectRepository(SchoolEntity)
-    private readonly schoolRepository: Repository<SchoolEntity>,
-  ) {
-    super(schoolRepository);
-  }
-
-  async findOneByIdOrFail(id: string, manager?: EntityManager) {
-    const result = await this.createQueryBuilder('school', manager)
-      .where('school.id = :id', { id })
-      .getOne();
-
-    if (!result) {
-      throw new EntityNotExistException('학교');
-    }
-
-    return result;
+export class SchoolPaginationService extends CoreSearchableQueryService<SchoolEntity> {
+  constructor(private readonly schoolRepository: SchoolRepository) {
+    super();
   }
 
   async findMany(
@@ -38,7 +21,7 @@ export class SchoolQueryService extends CoreSearchableQueryService<SchoolEntity>
     sortOptions?: EntitySortOption[],
     manager?: EntityManager,
   ) {
-    const qb = this.createQueryBuilder('school', manager);
+    const qb = this.schoolRepository.customQueryBuilder('school', manager);
 
     if (search) {
       qb.andBracketWheres(this.getSearchWheres(qb, search));

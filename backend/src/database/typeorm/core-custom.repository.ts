@@ -5,23 +5,23 @@ import {
   Repository,
   SelectQueryBuilder,
 } from 'typeorm';
-import { CustomQueryBuilder } from '../../database/typeorm/custom-query-builder';
-import { decodeBase64, encodeBase64 } from '../util/base64';
+import { CustomQueryBuilder } from './custom-query-builder';
+import { decodeBase64, encodeBase64 } from '../../common/util/base64';
 import { Type } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { validateOrFail } from '../lib/validation';
-import { InvalidInputException } from '../exception/custom-excpetion/invalid-input-exception';
-import { InvalidInputError } from '../error/invalid-input.error';
-import { SortOrder } from '../type/common.type';
-import { EntityPaginationOption } from '../interface/entity-pagination.interface';
-import { EntitySortOption } from '../interface/entity-sort.interface';
-import { snakeToCamel } from '../util/case';
+import { validateOrFail } from '../../common/lib/validation';
+import { InvalidInputException } from '../../common/exception/custom-excpetion/invalid-input-exception';
+import { InvalidInputError } from '../../common/error/invalid-input.error';
+import { SortOrder } from '../../common/type/common.type';
+import { EntityPaginationOption } from '../../common/interface/entity-pagination.interface';
+import { EntitySortOption } from '../../common/interface/entity-sort.interface';
+import { snakeToCamel } from '../../common/util/case';
 
-export abstract class CoreQueryService<T extends ObjectLiteral> {
-  constructor(protected readonly repository: Repository<T>) {}
-
-  createQueryBuilder(alias?: string, manager?: EntityManager) {
-    const qb = this.repository.createQueryBuilder(alias, manager?.queryRunner);
+export class CoreCustomRepository<
+  T extends ObjectLiteral,
+> extends Repository<T> {
+  customQueryBuilder(alias?: string, manager?: EntityManager) {
+    const qb = this.createQueryBuilder(alias, manager?.queryRunner);
     return new CustomQueryBuilder<T>(qb);
   }
 

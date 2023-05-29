@@ -4,22 +4,22 @@ import { UpdateMemberBodyDto } from './dto/update-member.dto';
 import { EntityManager } from 'typeorm';
 import { MemberEntity } from './entity/member.entity';
 import { CryptoService } from '../crypto/crypto.service';
-import { MemberQueryService } from './service/member-query.service';
 import { MemberAlreadyExistException } from './exception/member-already-exist.exception';
 import { FieldError } from '../common/error/field.error';
+import { MemberRepository } from './member.repository';
 
 @Injectable()
 export class MemberService {
   constructor(
     private readonly cryptoService: CryptoService,
-    private readonly memberQueryService: MemberQueryService,
+    private readonly memberRepository: MemberRepository,
   ) {}
 
   async findMember(
     memberId: string,
     manager?: EntityManager,
   ): Promise<MemberEntity> {
-    return this.memberQueryService.findOneOrFail(memberId, manager);
+    return this.memberRepository.findOneByIdOrFail(memberId, manager);
   }
 
   async addMember(
@@ -47,7 +47,7 @@ export class MemberService {
     updateMemberDto: UpdateMemberBodyDto,
     manager: EntityManager,
   ) {
-    const member = await this.memberQueryService.findOneOrFail(id, manager);
+    const member = await this.memberRepository.findOneByIdOrFail(id, manager);
 
     member.firstName = updateMemberDto.firstName;
     member.lastName = updateMemberDto.lastName;
@@ -56,13 +56,13 @@ export class MemberService {
   }
 
   async remove(id: string, manager: EntityManager) {
-    const member = await this.memberQueryService.findOneOrFail(id, manager);
+    const member = await this.memberRepository.findOneByIdOrFail(id, manager);
 
     await manager.softRemove(member);
   }
 
   private async checkExistEmailOrFail(email: string, manager: EntityManager) {
-    const existMember = await this.memberQueryService.findByEmail(
+    const existMember = await this.memberRepository.findOneByEmail(
       email,
       manager,
     );

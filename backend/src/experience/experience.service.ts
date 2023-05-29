@@ -1,27 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { EmploymentTypeQueryService } from '../employment-type/service/employment-type-query.service';
 import { CreateExperienceBodyDto } from './dto/create-experience.dto';
 import { ExperienceEntity } from './entity/experience.entity';
 import { EntityManager } from 'typeorm';
 import { MemberEntity } from '../member/entity/member.entity';
-import { CompanyQueryService } from '../company/service/company-query.service';
-import { IndustryQueryService } from '../industry/service/industry-query.service';
-import { ExperienceQueryService } from './service/experience-query.service';
 import { ExperienceDto } from './dto/experience.dto';
+import { CompanyRepository } from '../company/company.repository';
+import { EmploymentTypeRepository } from '../employment-type/employment-type.repository';
+import { ExperienceRepository } from './experience.repository';
+import { IndustryRepository } from '../industry/industry.repository';
 
 @Injectable()
 export class ExperienceService {
   constructor(
-    private readonly employmentTypeQueryService: EmploymentTypeQueryService,
-    private readonly companyQueryService: CompanyQueryService,
-    private readonly industryQueryService: IndustryQueryService,
-    private readonly experienceQueryService: ExperienceQueryService,
+    private readonly employmentTypeRepository: EmploymentTypeRepository,
+    private readonly companyRepository: CompanyRepository,
+    private readonly industryRepository: IndustryRepository,
+    private readonly experienceRepository: ExperienceRepository,
   ) {}
 
   async getMemberExperiences(member: MemberEntity): Promise<ExperienceDto[]> {
-    const experiences = await this.experienceQueryService.findByMemberId(
-      member.id,
-    );
+    const experiences = await this.experienceRepository.findByMember(member);
     return experiences.map(ExperienceDto.fromEntity);
   }
 
@@ -31,15 +29,15 @@ export class ExperienceService {
     manager: EntityManager,
   ): Promise<void> {
     const employmentType =
-      await this.employmentTypeQueryService.findOneByIdOrFail(
+      await this.employmentTypeRepository.findOneByIdOrFail(
         input.employmentTypeId,
       );
 
-    const company = await this.companyQueryService.findOneByIdOrFail(
+    const company = await this.companyRepository.findOneByIdOrFail(
       input.companyId,
     );
 
-    const industry = await this.industryQueryService.findOneByIdOrFail(
+    const industry = await this.industryRepository.findOneByIdOrFail(
       input.industryId,
     );
 

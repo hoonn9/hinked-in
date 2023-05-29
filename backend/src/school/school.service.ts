@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { SchoolQueryService } from './service/school-query.service';
+import { SchoolPaginationService } from './service/school.pagination.service';
 import {
   PaginationQueryDto,
   PaginationResponseDto,
@@ -10,7 +10,7 @@ import { SchoolDto } from './dto/school.dto';
 
 @Injectable()
 export class SchoolService {
-  constructor(private readonly schoolQueryService: SchoolQueryService) {}
+  constructor(private readonly schoolQueryService: SchoolPaginationService) {}
 
   async getSchools(
     paginationQuery: PaginationQueryDto,

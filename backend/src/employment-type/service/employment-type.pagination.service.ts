@@ -1,22 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository, SelectQueryBuilder } from 'typeorm';
+import { EntityManager, SelectQueryBuilder } from 'typeorm';
 import { EmploymentTypeEntity } from '../entity/employment-type.entity';
-import { EntityNotExistException } from '../../common/exception/custom-excpetion/entity-not-exist-exception';
 import { EntitySearchOption } from '../../common/interface/entity-search.interface';
 import { WhereParams } from '../../database/typeorm/interface/where.interface';
-import { CoreSearchableQueryService } from '../../common/service/core-searchable-query.service';
+import { CoreSearchableQueryService } from '../../common/service/core-searchable-pagination.service';
 import { EntitySortOption } from '../../common/interface/entity-sort.interface';
 import { EntityPaginationOption } from '../../common/interface/entity-pagination.interface';
 import { EmploymentTypeCursor } from '../typing/employment-type-cursor.type';
+import { EmploymentTypeRepository } from '../employment-type.repository';
 
 @Injectable()
-export class EmploymentTypeQueryService extends CoreSearchableQueryService<EmploymentTypeEntity> {
+export class EmploymentTypePaginationService extends CoreSearchableQueryService<EmploymentTypeEntity> {
   constructor(
-    @InjectRepository(EmploymentTypeEntity)
-    protected readonly employmentTypeRepository: Repository<EmploymentTypeEntity>,
+    protected readonly employmentTypeRepository: EmploymentTypeRepository,
   ) {
-    super(employmentTypeRepository);
+    super();
   }
 
   async findMany(
@@ -25,7 +23,10 @@ export class EmploymentTypeQueryService extends CoreSearchableQueryService<Emplo
     sortOptions?: EntitySortOption[],
     manager?: EntityManager,
   ) {
-    const qb = this.createQueryBuilder('employment_type', manager);
+    const qb = this.employmentTypeRepository.customQueryBuilder(
+      'employment_type',
+      manager,
+    );
 
     if (search) {
       qb.andBracketWheres(this.getSearchWheres(qb, search));
@@ -63,26 +64,5 @@ export class EmploymentTypeQueryService extends CoreSearchableQueryService<Emplo
     }
 
     return null;
-  }
-
-  async findOneByIdOrFail(id: string, manager?: EntityManager) {
-    const employmentType = await this.createQueryBuilder(
-      'employment_type',
-      manager,
-    )
-      .where('id = :id', { id })
-      .getOne();
-
-    if (!employmentType) {
-      throw new EntityNotExistException('고용 타입');
-    }
-
-    return employmentType;
-  }
-
-  async isExistingName(name: string, manager?: EntityManager) {
-    return this.createQueryBuilder('employment_type', manager)
-      .where('name = :name', { name })
-      .getExists();
   }
 }

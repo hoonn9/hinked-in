@@ -10,6 +10,7 @@ import { envFilePath } from './common/config/env-file-path';
 import { IndustryModule } from './industry/industry.module';
 import { SchoolModule } from './school/school.module';
 import { EducationModule } from './education/education.module';
+import { EmploymentTypeModule } from './employment-type/employment-type.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { EducationModule } from './education/education.module';
     DatabaseModule,
     AuthModule,
     MemberModule,
+    EmploymentTypeModule,
     ExperienceModule,
     IndustryModule,
     SchoolModule,

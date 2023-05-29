@@ -3,15 +3,15 @@ import { CreateEducationBodyDto } from './dto/create-education.dto';
 import { MemberEntity } from '../member/entity/member.entity';
 import { EntityManager } from 'typeorm';
 import { EducationEntity } from './entity/education.entity';
-import { SchoolQueryService } from '../school/service/school-query.service';
-import { EducationQueryService } from './service/education-query.service';
 import { EducationDto } from './dto/education.dto';
+import { EducationRepository } from './education.repository';
+import { SchoolRepository } from '../school/school.repository';
 
 @Injectable()
 export class EducationService {
   constructor(
-    private readonly schoolQueryService: SchoolQueryService,
-    private readonly educationQueryService: EducationQueryService,
+    private readonly schoolRepository: SchoolRepository,
+    private readonly educationRepository: EducationRepository,
   ) {}
 
   async createEducation(
@@ -19,7 +19,7 @@ export class EducationService {
     body: CreateEducationBodyDto,
     manager: EntityManager,
   ) {
-    const school = await this.schoolQueryService.findOneByIdOrFail(
+    const school = await this.schoolRepository.findOneByIdOrFail(
       body.schoolId,
       manager,
     );
@@ -41,7 +41,7 @@ export class EducationService {
     member: MemberEntity,
     manager?: EntityManager,
   ): Promise<EducationDto[]> {
-    const entities = await this.educationQueryService.findByMember(
+    const entities = await this.educationRepository.findByMember(
       member,
       manager,
     );

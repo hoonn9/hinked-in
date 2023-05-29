@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { EmploymentTypeEntity } from './entity/employment-type.entity';
 import { EntityManager } from 'typeorm';
 import { CreateEmploymentTypeDto } from './dto/create-employment-type.dto';
-import { EmploymentTypeQueryService } from './service/employment-type-query.service';
+import { EmploymentTypePaginationService } from './service/employment-type.pagination.service';
 import { AlreadyExistError } from '../common/error/already-exist.error';
 import { EmploymentTypeDto } from './dto/employment-type.dto';
 import { EntitySearchQueryDto } from '../common/dto/entity-search.dto';
@@ -11,11 +11,13 @@ import {
   PaginationQueryDto,
   PaginationResponseDto,
 } from '../common/dto/pagination.dto';
+import { EmploymentTypeRepository } from './employment-type.repository';
 
 @Injectable()
 export class EmploymentTypeService {
   constructor(
-    private readonly employmentTypeQueryService: EmploymentTypeQueryService,
+    private readonly employmentTypePaginationService: EmploymentTypePaginationService,
+    private readonly employmentTypeRepository: EmploymentTypeRepository,
   ) {}
 
   async getEmploymentTypes(
@@ -23,11 +25,12 @@ export class EmploymentTypeService {
     sortQuery?: EntitySortQueryDto,
     searchQuery?: EntitySearchQueryDto,
   ): Promise<PaginationResponseDto<EmploymentTypeDto>> {
-    const paginationResult = await this.employmentTypeQueryService.findMany(
-      paginationQuery,
-      searchQuery,
-      sortQuery?.options,
-    );
+    const paginationResult =
+      await this.employmentTypePaginationService.findMany(
+        paginationQuery,
+        searchQuery,
+        sortQuery?.options,
+      );
     return {
       list: paginationResult.list.map(EmploymentTypeDto.fromEntity),
       metadata: { nextCursor: paginationResult.nextCursor },
@@ -38,9 +41,7 @@ export class EmploymentTypeService {
     dto: CreateEmploymentTypeDto,
     manager: EntityManager,
   ) {
-    if (
-      await this.employmentTypeQueryService.isExistingName(dto.name, manager)
-    ) {
+    if (await this.employmentTypeRepository.isExistingName(dto.name, manager)) {
       throw new AlreadyExistError(EmploymentTypeEntity, 'name');
     }
 

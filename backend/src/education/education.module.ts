@@ -3,12 +3,20 @@ import { EducationController } from './education.controller';
 import { EducationService } from './education.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EducationEntity } from './entity/education.entity';
-import { SchoolModule } from '../school/school.module';
-import { EducationQueryService } from './service/education-query.service';
+import { TypeOrmCustomModule } from '../database/typeorm/typeorm-custom.module';
+import { EducationRepository } from './education.repository';
+import { SchoolRepository } from '../school/school.repository';
+import { SchoolEntity } from '../school/entity/school.entity';
 
 @Module({
-  imports: [SchoolModule, TypeOrmModule.forFeature([EducationEntity])],
+  imports: [
+    TypeOrmModule.forFeature([EducationEntity, SchoolEntity]),
+    TypeOrmCustomModule.forCustomRepository([
+      EducationRepository,
+      SchoolRepository,
+    ]),
+  ],
   controllers: [EducationController],
-  providers: [EducationService, EducationQueryService],
+  providers: [EducationService],
 })
 export class EducationModule {}

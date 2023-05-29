@@ -1,15 +1,11 @@
-import { ObjectLiteral, Repository, SelectQueryBuilder } from 'typeorm';
+import { ObjectLiteral, SelectQueryBuilder } from 'typeorm';
 import { EntitySearchOption } from '../interface/entity-search.interface';
 import { WhereParams } from '../../database/typeorm/interface/where.interface';
-import { CoreQueryService } from './core-query.service';
+import { CorePaginationService } from './core-pagination.service';
 
 export abstract class CoreSearchableQueryService<
   T extends ObjectLiteral,
-> extends CoreQueryService<T> {
-  constructor(protected readonly repository: Repository<T>) {
-    super(repository);
-  }
-
+> extends CorePaginationService<T> {
   getSearchWheres(qb: SelectQueryBuilder<T>, search: EntitySearchOption) {
     return search.field
       .map((field) => this.makeSearchWhereParams(qb, search.keyword, field))
