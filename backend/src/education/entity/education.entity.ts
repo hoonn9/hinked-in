@@ -1,10 +1,9 @@
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
-  OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { DateColumnEntity } from '../../common/entity/date-column.entity';
@@ -49,6 +48,7 @@ export class EducationEntity extends DateColumnEntity {
   endDate: Date | null;
 
   @ManyToOne(() => SchoolEntity, (school) => school.educations)
+  @Index('education_ix_school_id')
   @JoinColumn({
     name: 'school_id',
     foreignKeyConstraintName: 'education_school_id_fkey',
@@ -57,6 +57,7 @@ export class EducationEntity extends DateColumnEntity {
   school: SchoolEntity;
 
   @ManyToOne(() => MemberEntity, (member) => member.educations)
+  @Index('education_ix_member_id')
   @JoinColumn({
     name: 'member_id',
     foreignKeyConstraintName: 'education_member_id_fkey',

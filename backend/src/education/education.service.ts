@@ -4,10 +4,15 @@ import { MemberEntity } from '../member/entity/member.entity';
 import { EntityManager } from 'typeorm';
 import { EducationEntity } from './entity/education.entity';
 import { SchoolQueryService } from '../school/service/school-query.service';
+import { EducationQueryService } from './service/education-query.service';
+import { EducationDto } from './dto/education.dto';
 
 @Injectable()
 export class EducationService {
-  constructor(private readonly schoolQueryService: SchoolQueryService) {}
+  constructor(
+    private readonly schoolQueryService: SchoolQueryService,
+    private readonly educationQueryService: EducationQueryService,
+  ) {}
 
   async createEducation(
     member: MemberEntity,
@@ -30,5 +35,17 @@ export class EducationService {
     });
 
     await manager.save(education);
+  }
+
+  async getMemberEducations(
+    member: MemberEntity,
+    manager?: EntityManager,
+  ): Promise<EducationDto[]> {
+    const entities = await this.educationQueryService.findByMember(
+      member,
+      manager,
+    );
+
+    return entities.map(EducationDto.fromEntity);
   }
 }
