@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { AuthLocalGuard } from '../../../../src/auth/auth-local/guard/auth-local.guard';
 import { InvalidInputException } from '../../../../src/common/exception/custom-excpetion/invalid-input-exception';
 import { faker } from '@faker-js/faker';
-import { mockExecutionContextRequestBody } from '../../../lib/execution-context';
+import { MockHttpFactory } from '../../../lib/mock/mock-http';
 
 describe('AuthLocalGuard', () => {
   let authLocalGuard: AuthLocalGuard;
@@ -20,7 +20,7 @@ describe('AuthLocalGuard', () => {
       .spyOn(AuthLocalGuard.prototype, 'canActivate')
       .mockResolvedValueOnce(true);
 
-    const ctx = mockExecutionContextRequestBody({
+    const ctx = MockHttpFactory.getExecutionContextRequestBody({
       email: faker.internet.email(),
       password: faker.internet.password(),
     });
@@ -40,7 +40,9 @@ describe('AuthLocalGuard', () => {
     'Request Body에 Email, Password 중 값이 하나라도 없는 경우 ValidationException를 발생시킨다',
     (body) => {
       return expect(
-        authLocalGuard.canActivate(mockExecutionContextRequestBody(body)),
+        authLocalGuard.canActivate(
+          MockHttpFactory.getExecutionContextRequestBody(body),
+        ),
       ).rejects.toBeInstanceOf(InvalidInputException);
     },
   );

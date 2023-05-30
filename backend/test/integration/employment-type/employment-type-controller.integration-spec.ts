@@ -4,7 +4,7 @@ import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { EmploymentTypeEntity } from '../../../src/employment-type/entity/employment-type.entity';
 import { PaginationQueryDto } from '../../../src/common/dto/pagination.dto';
 import { EntitySortQueryDto } from '../../../src/common/dto/entity-sort.dto';
-import { EmploymentTypeQueryService } from '../../../src/employment-type/service/employment-type-query.service';
+import { EmploymentTypePaginationService } from '../../../src/employment-type/service/employment-type.pagination.service';
 import { EmploymentTypeSeedService } from '../../../src/seeder/service/employment-type-seed.service';
 import { Repository } from 'typeorm';
 import { decodeBase64 } from '../../../src/common/util/base64';
@@ -13,6 +13,8 @@ import { faker } from '@faker-js/faker';
 import { EmploymentTypeCursor } from '../../../src/employment-type/typing/employment-type-cursor.type';
 import * as dayjs from 'dayjs';
 import { TestingFixture } from '../../fixture/testing-fixture';
+import { EmploymentTypeRepository } from '../../../src/employment-type/employment-type.repository';
+import { TypeOrmCustomModule } from '../../../src/database/typeorm/typeorm-custom.module';
 
 describe('EmploymentTypeController (Integration Test)', () => {
   let testingFixture: TestingFixture;
@@ -22,11 +24,14 @@ describe('EmploymentTypeController (Integration Test)', () => {
   describe('getEmploymentTypes', () => {
     beforeEach(async () => {
       testingFixture = await TestingFixture.createModule({
-        imports: [TypeOrmModule.forFeature([EmploymentTypeEntity])],
+        imports: [
+          TypeOrmModule.forFeature([EmploymentTypeEntity]),
+          TypeOrmCustomModule.forCustomRepository([EmploymentTypeRepository]),
+        ],
         controllers: [EmploymentTypeController],
         providers: [
           EmploymentTypeService,
-          EmploymentTypeQueryService,
+          EmploymentTypePaginationService,
           EmploymentTypeSeedService,
         ],
       });

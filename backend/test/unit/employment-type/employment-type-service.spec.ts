@@ -1,42 +1,47 @@
 import { Test } from '@nestjs/testing';
 import { EmploymentTypeService } from '../../../src/employment-type/employment-type.service';
-import { EmploymentTypeQueryService } from '../../../src/employment-type/service/employment-type-query.service';
-import { mockEntityManager } from '../../lib/mock/mock-typeorm';
+import { EmploymentTypePaginationService } from '../../../src/employment-type/service/employment-type.pagination.service';
 import { faker } from '@faker-js/faker';
 import { AlreadyExistError } from '../../../src/common/error/already-exist.error';
+import { EmploymentTypeRepository } from '../../../src/employment-type/employment-type.repository';
+import { MockTypeOrmFactory } from '../../lib/mock/mock-typeorm';
 
-const mockEmploymentTypeQueryService = {
+const mockEmploymentTypeRepository = {
   isExistingName: jest.fn(),
 };
 
 describe('EmploymentTypeService', () => {
   let employmentTypeService: EmploymentTypeService;
-  let employmentTypeQueryService: EmploymentTypeQueryService;
+  let employmentTypeRepository: EmploymentTypeRepository;
 
   beforeEach(async () => {
     const testingModule = await Test.createTestingModule({
       providers: [
         EmploymentTypeService,
         {
-          provide: EmploymentTypeQueryService,
-          useValue: mockEmploymentTypeQueryService,
+          provide: EmploymentTypeRepository,
+          useValue: mockEmploymentTypeRepository,
+        },
+        {
+          provide: EmploymentTypePaginationService,
+          useValue: {},
         },
       ],
     }).compile();
 
     employmentTypeService = testingModule.get(EmploymentTypeService);
-    employmentTypeQueryService = testingModule.get(EmploymentTypeQueryService);
+    employmentTypeRepository = testingModule.get(EmploymentTypeRepository);
   });
 
   describe('addEmploymentType', () => {
     it('성공 케이스', async () => {
       // given
       const isExistingNameFn = jest
-        .spyOn(employmentTypeQueryService, 'isExistingName')
+        .spyOn(employmentTypeRepository, 'isExistingName')
         .mockImplementation(async () => false);
 
       const name = faker.name.jobTitle();
-      const manager = mockEntityManager();
+      const manager = MockTypeOrmFactory.getEntityManager();
 
       const saveFn = jest.spyOn(manager, 'save');
 
@@ -58,7 +63,7 @@ describe('EmploymentTypeService', () => {
     it('이미 존재하는 name으로 생성할 경우 AlreadyExistError를 던진다.', async () => {
       // given
       jest
-        .spyOn(employmentTypeQueryService, 'isExistingName')
+        .spyOn(employmentTypeRepository, 'isExistingName')
         .mockImplementation(async () => true);
 
       // when
@@ -68,7 +73,7 @@ describe('EmploymentTypeService', () => {
           {
             name: faker.name.jobTitle(),
           },
-          mockEntityManager(),
+          MockTypeOrmFactory.getEntityManager(),
         ),
       ).rejects.toThrow(AlreadyExistError);
     });

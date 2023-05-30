@@ -1,39 +1,42 @@
-import {
-  EntityManager,
-  ObjectLiteral,
-  QueryBuilder,
-  Repository,
-} from 'typeorm';
+import { EntityManager, ObjectLiteral } from 'typeorm';
 import { mockAllFields } from './util';
-import { CustomQueryBuilder } from '../../../src/database/typeorm/custom-query-builder';
+import { CoreCustomRepository } from '../../../src/database/typeorm/core-custom.repository';
+import { Type } from '@nestjs/common';
 
-export const mockEntityManager = () => mockAllFields(EntityManager);
-
-export const mockQueryBuilder = <T extends ObjectLiteral>() => {
-  const result = {
-    where: jest.fn().mockReturnThis(),
-    getOne: jest.fn().mockReturnThis(),
-    getExists: jest.fn().mockReturnThis(),
-  } as unknown as QueryBuilder<T>;
-
-  return result;
+const mockQueryBuilder = {
+  where: jest.fn().mockReturnThis(),
+  getOne: jest.fn().mockReturnThis(),
+  getExists: jest.fn().mockReturnThis(),
 };
 
-export const mockCustomQueryBuilder = <T extends ObjectLiteral>() => {
-  const result = {
-    ...mockQueryBuilder(),
-    andBracketWheres: jest.fn().mockReturnThis(),
-  } as unknown as CustomQueryBuilder<T>;
-
-  return result;
+const mockCustomQueryBuilder = {
+  ...mockQueryBuilder,
+  andBracketWheres: jest.fn().mockReturnThis(),
 };
 
-export const mockRepository = <T extends ObjectLiteral>(): Repository<T> => {
-  const result = {
-    createQueryBuilder: jest.fn().mockReturnValue({
-      ...mockQueryBuilder,
-    }),
-  } as unknown as Repository<T>;
+export class MockTypeOrmFactory {
+  static getEntityManager() {
+    return mockAllFields(EntityManager);
+  }
 
-  return result;
-};
+  static getCustomRepository<
+    T extends ObjectLiteral,
+    R extends CoreCustomRepository<T>,
+  >(repository: Type<R>) {
+    const coreCustomRepository: Record<string, any> = {
+      target: jest.fn(),
+      queryRunner: jest.fn(),
+      manager: MockTypeOrmFactory.getEntityManager(),
+      createQueryBuilder: jest.fn().mockReturnValue(mockQueryBuilder),
+      customQueryBuilder: jest.fn().mockReturnValue(mockCustomQueryBuilder),
+    };
+
+    Object.getOwnPropertyNames(repository.prototype)
+      .filter((field) => field !== 'constructor')
+      .forEach((field) => {
+        coreCustomRepository[field] = repository.prototype[field];
+      });
+
+    return coreCustomRepository as R;
+  }
+}

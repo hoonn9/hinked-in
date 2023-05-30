@@ -5,19 +5,19 @@ import { MemberEntity } from '../../../src/member/entity/member.entity';
 import { EntityManager } from 'typeorm';
 import { MockCryptoModule } from '../../lib/mock/mock-crypto.module';
 import { CryptoService } from '../../../src/crypto/crypto.service';
-import { mockEntityManager } from '../../lib/mock/mock-typeorm';
-import { MemberQueryService } from '../../../src/member/service/member-query.service';
 import { MemberAlreadyExistException } from '../../../src/member/exception/member-already-exist.exception';
+import { MemberRepository } from '../../../src/member/member.repository';
+import { MockTypeOrmFactory } from '../../lib/mock/mock-typeorm';
 
-const mockMemberQueryService = {
-  findByEmail: jest.fn(),
-  findOneOrFail: jest.fn(),
+const mockMemberRepository = {
+  findOneByEmail: jest.fn(),
+  findOneByIdOrFail: jest.fn(),
 };
 
 describe('MemberService', () => {
   let memberService: MemberService;
   let cryptoService: CryptoService;
-  let memberQueryService: MemberQueryService;
+  let memberRepository: MemberRepository;
 
   beforeEach(async () => {
     const app = await Test.createTestingModule({
@@ -25,15 +25,15 @@ describe('MemberService', () => {
       providers: [
         MemberService,
         {
-          provide: MemberQueryService,
-          useValue: mockMemberQueryService,
+          provide: MemberRepository,
+          useValue: mockMemberRepository,
         },
       ],
     }).compile();
 
     memberService = app.get(MemberService);
     cryptoService = app.get(CryptoService);
-    memberQueryService = app.get(MemberQueryService);
+    memberRepository = app.get(MemberRepository);
   });
 
   describe('addMember', () => {
@@ -51,7 +51,7 @@ describe('MemberService', () => {
       };
 
       const findByEmailFn = jest
-        .spyOn(memberQueryService, 'findByEmail')
+        .spyOn(memberRepository, 'findOneByEmail')
         .mockResolvedValueOnce(null);
       const saveFn = jest
         .spyOn(em, 'save')
@@ -86,7 +86,7 @@ describe('MemberService', () => {
     it('이미 존재하는 유저의 정보로 가입시 MemberAlreadyExistsException을 발생시킨다.', async () => {
       // Given
       const findByEmailFn = jest
-        .spyOn(memberQueryService, 'findByEmail')
+        .spyOn(memberRepository, 'findOneByEmail')
         .mockResolvedValueOnce(new MemberEntity());
 
       // When
@@ -99,7 +99,7 @@ describe('MemberService', () => {
             firstName: faker.name.firstName(),
             lastName: faker.name.lastName(),
           },
-          mockEntityManager(),
+          MockTypeOrmFactory.getEntityManager(),
         ),
       ).rejects.toThrow(MemberAlreadyExistException);
 

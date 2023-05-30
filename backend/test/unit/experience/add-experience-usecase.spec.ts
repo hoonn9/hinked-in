@@ -1,62 +1,62 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExperienceService } from '../../../src/experience/experience.service';
 import { CreateExperienceBodyDto } from '../../../src/experience/dto/create-experience.dto';
-import { EmploymentTypeQueryService } from '../../../src/employment-type/service/employment-type-query.service';
-import { CompanyQueryService } from '../../../src/company/service/company-query.service';
 import { faker } from '@faker-js/faker';
 import { MemberFixture } from '../../fixture/member/member-fixture';
 import { CompanyFixture } from '../../fixture/company/company-fixture';
 import { EmploymentTypeFixture } from '../../fixture/employment-type/employment-type-fixture';
-import { mockEntityManager } from '../../lib/mock/mock-typeorm';
 import { EntityNotExistException } from '../../../src/common/exception/custom-excpetion/entity-not-exist-exception';
 import { IndustryFixture } from '../../fixture/industry/industry-fixture';
-import { IndustryQueryService } from '../../../src/industry/service/industry-query.service';
-import { ExperienceQueryService } from '../../../src/experience/service/experience-query.service';
+import { EmploymentTypeRepository } from '../../../src/employment-type/employment-type.repository';
+import { CompanyRepository } from '../../../src/company/company.repository';
+import { IndustryRepository } from '../../../src/industry/industry.repository';
+import { ExperienceRepository } from '../../../src/experience/experience.repository';
+import { MockTypeOrmFactory } from '../../lib/mock/mock-typeorm';
 
 describe('AddExperience UseCase', () => {
   let experienceService: ExperienceService;
-  let employmentTypeQueryService: EmploymentTypeQueryService;
-  let companyQueryService: CompanyQueryService;
-  let industryQueryService: IndustryQueryService;
+  let employmentTypeRepository: EmploymentTypeRepository;
+  let companyRepository: CompanyRepository;
+  let industryRepository: IndustryRepository;
 
   beforeEach(async () => {
-    const mockEmploymentTypeQueryService = {
+    const mockEmploymentTypeRepository = {
       findOneByIdOrFail: jest.fn(),
     };
-    const mockCompanyQueryService = {
+    const mockCompanyRepository = {
       findOneByIdOrFail: jest.fn(),
     };
-    const mockIndustryQueryService = {
+    const mockIndustryRepository = {
       findOneByIdOrFail: jest.fn(),
     };
-    const mockExperienceQueryService = {};
+    const mockExperienceRepository = {};
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ExperienceService,
         {
-          provide: EmploymentTypeQueryService,
-          useValue: mockEmploymentTypeQueryService,
+          provide: EmploymentTypeRepository,
+          useValue: mockEmploymentTypeRepository,
         },
         {
-          provide: CompanyQueryService,
-          useValue: mockCompanyQueryService,
+          provide: CompanyRepository,
+          useValue: mockCompanyRepository,
         },
         {
-          provide: IndustryQueryService,
-          useValue: mockIndustryQueryService,
+          provide: IndustryRepository,
+          useValue: mockIndustryRepository,
         },
         {
-          provide: ExperienceQueryService,
-          useValue: mockExperienceQueryService,
+          provide: ExperienceRepository,
+          useValue: mockExperienceRepository,
         },
       ],
     }).compile();
 
     experienceService = module.get(ExperienceService);
-    employmentTypeQueryService = module.get(EmploymentTypeQueryService);
-    companyQueryService = module.get(CompanyQueryService);
-    industryQueryService = module.get(IndustryQueryService);
+    employmentTypeRepository = module.get(EmploymentTypeRepository);
+    companyRepository = module.get(CompanyRepository);
+    industryRepository = module.get(IndustryRepository);
   });
 
   it('성공 케이스', async () => {
@@ -68,15 +68,15 @@ describe('AddExperience UseCase', () => {
     const mockMember = MemberFixture.createMemberEntity();
 
     const employmentTypeFn = jest
-      .spyOn(employmentTypeQueryService, 'findOneByIdOrFail')
+      .spyOn(employmentTypeRepository, 'findOneByIdOrFail')
       .mockResolvedValueOnce(mockEmploymentType);
 
     const companyFn = jest
-      .spyOn(companyQueryService, 'findOneByIdOrFail')
+      .spyOn(companyRepository, 'findOneByIdOrFail')
       .mockResolvedValueOnce(mockCompany);
 
     const industryFn = jest
-      .spyOn(industryQueryService, 'findOneByIdOrFail')
+      .spyOn(industryRepository, 'findOneByIdOrFail')
       .mockResolvedValueOnce(mockIndustry);
 
     // When
@@ -94,7 +94,11 @@ describe('AddExperience UseCase', () => {
 
     // Then
     await expect(
-      experienceService.addExperience(input, mockMember, mockEntityManager()),
+      experienceService.addExperience(
+        input,
+        mockMember,
+        MockTypeOrmFactory.getEntityManager(),
+      ),
     ).resolves.not.toThrow();
 
     expect(employmentTypeFn).toHaveBeenCalledWith(input.employmentTypeId);
@@ -112,17 +116,17 @@ describe('AddExperience UseCase', () => {
     const mockMember = MemberFixture.createMemberEntity();
 
     const employmentTypeFn = jest
-      .spyOn(employmentTypeQueryService, 'findOneByIdOrFail')
+      .spyOn(employmentTypeRepository, 'findOneByIdOrFail')
       .mockImplementationOnce(() =>
         Promise.reject(new EntityNotExistException()),
       );
 
     jest
-      .spyOn(companyQueryService, 'findOneByIdOrFail')
+      .spyOn(companyRepository, 'findOneByIdOrFail')
       .mockResolvedValueOnce(mockCompany);
 
     jest
-      .spyOn(industryQueryService, 'findOneByIdOrFail')
+      .spyOn(industryRepository, 'findOneByIdOrFail')
       .mockResolvedValueOnce(mockIndustry);
 
     // When
@@ -140,7 +144,11 @@ describe('AddExperience UseCase', () => {
 
     // Then
     await expect(
-      experienceService.addExperience(input, mockMember, mockEntityManager()),
+      experienceService.addExperience(
+        input,
+        mockMember,
+        MockTypeOrmFactory.getEntityManager(),
+      ),
     ).rejects.toThrow(EntityNotExistException);
 
     expect(employmentTypeFn).toHaveBeenCalledWith(input.employmentTypeId);
@@ -155,17 +163,17 @@ describe('AddExperience UseCase', () => {
     const mockMember = MemberFixture.createMemberEntity();
 
     jest
-      .spyOn(employmentTypeQueryService, 'findOneByIdOrFail')
+      .spyOn(employmentTypeRepository, 'findOneByIdOrFail')
       .mockResolvedValueOnce(mockEmploymentType);
 
     const companyFn = jest
-      .spyOn(companyQueryService, 'findOneByIdOrFail')
+      .spyOn(companyRepository, 'findOneByIdOrFail')
       .mockImplementationOnce(() =>
         Promise.reject(new EntityNotExistException()),
       );
 
     jest
-      .spyOn(industryQueryService, 'findOneByIdOrFail')
+      .spyOn(industryRepository, 'findOneByIdOrFail')
       .mockResolvedValueOnce(mockIndustry);
 
     // When
@@ -183,7 +191,11 @@ describe('AddExperience UseCase', () => {
 
     // Then
     await expect(
-      experienceService.addExperience(input, mockMember, mockEntityManager()),
+      experienceService.addExperience(
+        input,
+        mockMember,
+        MockTypeOrmFactory.getEntityManager(),
+      ),
     ).rejects.toThrow(EntityNotExistException);
 
     expect(companyFn).toHaveBeenCalledWith(input.companyId);
@@ -198,15 +210,15 @@ describe('AddExperience UseCase', () => {
     const mockMember = MemberFixture.createMemberEntity();
 
     jest
-      .spyOn(employmentTypeQueryService, 'findOneByIdOrFail')
+      .spyOn(employmentTypeRepository, 'findOneByIdOrFail')
       .mockResolvedValueOnce(mockEmploymentType);
 
     jest
-      .spyOn(companyQueryService, 'findOneByIdOrFail')
+      .spyOn(companyRepository, 'findOneByIdOrFail')
       .mockResolvedValueOnce(mockCompany);
 
     const industryFn = jest
-      .spyOn(industryQueryService, 'findOneByIdOrFail')
+      .spyOn(industryRepository, 'findOneByIdOrFail')
       .mockImplementationOnce(() =>
         Promise.reject(new EntityNotExistException()),
       );
@@ -226,7 +238,11 @@ describe('AddExperience UseCase', () => {
 
     // Then
     await expect(
-      experienceService.addExperience(input, mockMember, mockEntityManager()),
+      experienceService.addExperience(
+        input,
+        mockMember,
+        MockTypeOrmFactory.getEntityManager(),
+      ),
     ).rejects.toThrow(EntityNotExistException);
 
     expect(industryFn).toHaveBeenCalledWith(input.industryId);
