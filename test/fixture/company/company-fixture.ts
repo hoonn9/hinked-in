@@ -7,6 +7,8 @@ export class CompanyFixture {
     const result: CompanyEntity = {
       id: faker.datatype.uuid(),
       name: faker.company.name(),
+      follows: null,
+      ...mockDateColumns(),
       ...mockDateColumns(),
     };
 

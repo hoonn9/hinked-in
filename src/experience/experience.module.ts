@@ -7,7 +7,7 @@ import { TypeOrmCustomModule } from '../database/typeorm/typeorm-custom.module';
 import { ExperienceRepository } from './experience.repository';
 import { EmploymentTypeRepository } from '../employment-type/employment-type.repository';
 import { EmploymentTypeEntity } from '../employment-type/entity/employment-type.entity';
-import { CompanyRepository } from '../company/company.repository';
+import { CompanyRepository } from '../company/repository/company.repository';
 import { CompanyEntity } from '../company/entity/company.entity';
 import { IndustryRepository } from '../industry/industry.repository';
 import { IndustryEntity } from '../industry/entity/industry.entity';

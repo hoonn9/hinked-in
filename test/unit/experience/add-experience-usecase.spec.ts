@@ -8,7 +8,7 @@ import { EmploymentTypeFixture } from '../../fixture/employment-type/employment-
 import { EntityNotExistException } from '../../../src/common/exception/custom-excpetion/entity-not-exist-exception';
 import { IndustryFixture } from '../../fixture/industry/industry-fixture';
 import { EmploymentTypeRepository } from '../../../src/employment-type/employment-type.repository';
-import { CompanyRepository } from '../../../src/company/company.repository';
+import { CompanyRepository } from '../../../src/company/repository/company.repository';
 import { IndustryRepository } from '../../../src/industry/industry.repository';
 import { ExperienceRepository } from '../../../src/experience/experience.repository';
 import { MockTypeOrmFactory } from '../../lib/mock/mock-typeorm';

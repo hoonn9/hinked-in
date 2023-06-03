@@ -4,7 +4,7 @@ import { ExperienceEntity } from './entity/experience.entity';
 import { EntityManager } from 'typeorm';
 import { MemberEntity } from '../member/entity/member.entity';
 import { ExperienceDto } from './dto/experience.dto';
-import { CompanyRepository } from '../company/company.repository';
+import { CompanyRepository } from '../company/repository/company.repository';
 import { EmploymentTypeRepository } from '../employment-type/employment-type.repository';
 import { ExperienceRepository } from './experience.repository';
 import { IndustryRepository } from '../industry/industry.repository';
