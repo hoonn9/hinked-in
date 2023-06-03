@@ -8,6 +8,7 @@ import { CompanyRepository } from '../company/repository/company.repository';
 import { EmploymentTypeRepository } from '../employment-type/employment-type.repository';
 import { ExperienceRepository } from './experience.repository';
 import { IndustryRepository } from '../industry/industry.repository';
+import { MemberRepository } from '../member/member.repository';
 
 @Injectable()
 export class ExperienceService {
@@ -16,9 +17,11 @@ export class ExperienceService {
     private readonly companyRepository: CompanyRepository,
     private readonly industryRepository: IndustryRepository,
     private readonly experienceRepository: ExperienceRepository,
+    private readonly memberRepository: MemberRepository,
   ) {}
 
-  async getMemberExperiences(member: MemberEntity): Promise<ExperienceDto[]> {
+  async getMemberExperiences(memberId: string): Promise<ExperienceDto[]> {
+    const member = await this.memberRepository.findOneByIdOrFail(memberId);
     const experiences = await this.experienceRepository.findByMember(member);
     return experiences.map(ExperienceDto.fromEntity);
   }

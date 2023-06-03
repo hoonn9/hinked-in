@@ -15,13 +15,6 @@ export class MemberService {
     private readonly memberRepository: MemberRepository,
   ) {}
 
-  async findMember(
-    memberId: string,
-    manager?: EntityManager,
-  ): Promise<MemberEntity> {
-    return this.memberRepository.findOneByIdOrFail(memberId, manager);
-  }
-
   async addMember(
     createMemberDto: CreateMemberBodyDto,
     manager: EntityManager,

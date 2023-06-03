@@ -1,10 +1,9 @@
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UseController } from '../../common/decorator/use-controller.decorator';
 import { Get, HttpCode, HttpStatus, Param } from '@nestjs/common';
-import { ExperienceService } from '../../experience/experience.service';
-import { MemberService } from '../member.service';
-import { GetMemberExperienceParamDto } from '../dto/get-member-experience.dto';
-import { ExperienceDto } from '../../experience/dto/experience.dto';
+import { ExperienceService } from '../experience.service';
+import { GetMemberExperienceParamDto } from '../../member/dto/get-member-experience.dto';
+import { ExperienceDto } from '../dto/experience.dto';
 import { ApiHttpResponse } from '../../common/lib/swagger/decorator/api-http-response.decorator';
 import { ApiHttpExceptionResponse } from '../../common/lib/swagger/decorator/api-http-exception-response.decorator';
 import { EXCEPTION_RESPONSE } from '../../common/exception/constant';
@@ -12,10 +11,7 @@ import { EXCEPTION_RESPONSE } from '../../common/exception/constant';
 @ApiTags('member')
 @UseController('member')
 export class MemberExperienceController {
-  constructor(
-    private readonly memberService: MemberService,
-    private readonly experienceService: ExperienceService,
-  ) {}
+  constructor(private readonly experienceService: ExperienceService) {}
 
   @ApiOperation({
     description: '멤버의 경력 리스트를 가져옵니다.',
@@ -39,7 +35,6 @@ export class MemberExperienceController {
   async getMemberExperiences(
     @Param() params: GetMemberExperienceParamDto,
   ): Promise<ExperienceDto[]> {
-    const member = await this.memberService.findMember(params.id);
-    return this.experienceService.getMemberExperiences(member);
+    return this.experienceService.getMemberExperiences(params.id);
   }
 }
