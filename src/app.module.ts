@@ -12,6 +12,7 @@ import { SchoolModule } from './school/school.module';
 import { EducationModule } from './education/education.module';
 import { EmploymentTypeModule } from './employment-type/employment-type.module';
 import { CompanyModule } from './company/company.module';
+import { PostModule } from './post/post.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { CompanyModule } from './company/company.module';
     SchoolModule,
     EducationModule,
     CompanyModule,
+    PostModule,
   ],
   controllers: [AppController],
 })
