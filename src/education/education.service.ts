@@ -24,17 +24,18 @@ export class EducationService {
       manager,
     );
 
-    const education = EducationEntity.new({
-      degree: body.degree,
-      grade: body.grade,
-      startDate: body.startDate,
-      endDate: body.endDate,
-      fieldOfStudy: body.fieldOfStudy,
-      school,
-      member,
-    });
-
-    await manager.save(education);
+    await this.educationRepository.createEducation(
+      EducationEntity.new({
+        degree: body.degree,
+        grade: body.grade,
+        startDate: body.startDate,
+        endDate: body.endDate,
+        fieldOfStudy: body.fieldOfStudy,
+        school,
+        member,
+      }),
+      manager,
+    );
   }
 
   async getMemberEducations(

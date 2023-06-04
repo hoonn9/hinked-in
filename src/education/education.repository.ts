@@ -15,4 +15,11 @@ export class EducationRepository extends CoreCustomRepository<EducationEntity> {
       .where('education.member_id = :memberId', { memberId: member.id })
       .getMany();
   }
+
+  async createEducation(
+    educationEntity: EducationEntity,
+    manager: EntityManager,
+  ) {
+    await manager.insert(EducationEntity, educationEntity);
+  }
 }

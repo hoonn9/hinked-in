@@ -11,4 +11,11 @@ export class ExperienceRepository extends CoreCustomRepository<ExperienceEntity>
       .where('experience.memberId = :memberId', { memberId: member.id })
       .getMany();
   }
+
+  async createExperience(
+    experienceEntity: ExperienceEntity,
+    manager: EntityManager,
+  ) {
+    await manager.insert(ExperienceEntity, experienceEntity);
+  }
 }

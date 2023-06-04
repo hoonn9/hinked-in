@@ -44,19 +44,20 @@ export class ExperienceService {
       input.industryId,
     );
 
-    const experience = ExperienceEntity.new({
-      title: input.title,
-      memberId: member.id,
-      employmentTypeId: employmentType.id,
-      companyId: company.id,
-      location: input.location,
-      industryId: industry.id,
-      description: input.description,
-      headline: input.headline,
-      startDate: input.startDate,
-      endDate: input.endDate,
-    });
-
-    await manager.save(experience);
+    await this.experienceRepository.createExperience(
+      ExperienceEntity.new({
+        title: input.title,
+        memberId: member.id,
+        employmentTypeId: employmentType.id,
+        companyId: company.id,
+        location: input.location,
+        industryId: industry.id,
+        description: input.description,
+        headline: input.headline,
+        startDate: input.startDate,
+        endDate: input.endDate,
+      }),
+      manager,
+    );
   }
 }

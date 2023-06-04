@@ -18,6 +18,10 @@ export class MemberRepository extends CoreCustomRepository<MemberEntity> {
     return member;
   }
 
+  async createMember(memberEntity: MemberEntity, manager: EntityManager) {
+    await manager.insert(MemberEntity, memberEntity);
+  }
+
   async findOneByEmail(email: string, manager?: EntityManager) {
     return this.customQueryBuilder('member', manager)
       .where('email = :email', { email })

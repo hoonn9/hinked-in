@@ -25,14 +25,15 @@ export class MemberService {
       createMemberDto.password,
     );
 
-    const member = MemberEntity.new({
-      email: createMemberDto.email,
-      password: hashedPassword,
-      firstName: createMemberDto.firstName,
-      lastName: createMemberDto.lastName,
-    });
-
-    await manager.save(member);
+    await this.memberRepository.createMember(
+      MemberEntity.new({
+        email: createMemberDto.email,
+        password: hashedPassword,
+        firstName: createMemberDto.firstName,
+        lastName: createMemberDto.lastName,
+      }),
+      manager,
+    );
   }
 
   async update(
