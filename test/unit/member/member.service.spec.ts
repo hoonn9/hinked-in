@@ -1,17 +1,17 @@
 import { Test } from '@nestjs/testing';
 import { MemberService } from '../../../src/member/member.service';
 import { faker } from '@faker-js/faker';
-import { MemberEntity } from '../../../src/member/entity/member.entity';
-import { EntityManager } from 'typeorm';
 import { MockCryptoModule } from '../../lib/mock/mock-crypto.module';
 import { CryptoService } from '../../../src/crypto/crypto.service';
 import { MemberAlreadyExistException } from '../../../src/member/exception/member-already-exist.exception';
 import { MemberRepository } from '../../../src/member/member.repository';
 import { MockTypeOrmFactory } from '../../lib/mock/mock-typeorm';
+import { MemberFixture } from '../../fixture/member/member-fixture';
 
 const mockMemberRepository = {
   findOneByEmail: jest.fn(),
   findOneByIdOrFail: jest.fn(),
+  createMember: jest.fn(),
 };
 
 describe('MemberService', () => {
@@ -46,62 +46,64 @@ describe('MemberService', () => {
         lastName: faker.name.lastName(),
       };
 
-      const em = {
-        save: async (member: MemberEntity) => member,
-      };
+      const manager = MockTypeOrmFactory.getEntityManager();
 
       const findByEmailFn = jest
         .spyOn(memberRepository, 'findOneByEmail')
         .mockResolvedValueOnce(null);
-      const saveFn = jest
-        .spyOn(em, 'save')
-        .mockResolvedValueOnce(new MemberEntity());
+      const createMemberFn = jest.spyOn(memberRepository, 'createMember');
 
       // When
-      await memberService.addMember(createMemberDto, em as EntityManager);
+      await memberService.addMember(createMemberDto, manager);
 
       // Then
-      expect(findByEmailFn.mock.calls[0][0]).toEqual(createMemberDto.email);
-      expect(findByEmailFn.mock.calls[0][1]).toEqual(em);
-      expect(saveFn.mock.calls[0][0].email).toEqual(createMemberDto.email);
-      expect(saveFn.mock.calls[0][0].firstName).toEqual(
-        createMemberDto.firstName,
-      );
-      expect(saveFn.mock.calls[0][0].lastName).toEqual(
-        createMemberDto.lastName,
+      expect(findByEmailFn).toHaveBeenCalledWith(
+        createMemberDto.email,
+        manager,
       );
 
+      const createMemberFnParam = createMemberFn.mock.calls[0];
+
+      expect(createMemberFnParam[0].email).toEqual(createMemberDto.email);
+      expect(createMemberFnParam[0].firstName).toEqual(
+        createMemberDto.firstName,
+      );
+      expect(createMemberFnParam[0].lastName).toEqual(createMemberDto.lastName);
+      expect(createMemberFnParam[0].deleteDate).toBe(null);
+      expect(typeof createMemberFnParam[0].id).toBe('string');
+
       // hash password
-      expect(saveFn.mock.calls[0][0].password).not.toEqual(
+      expect(createMemberFnParam[0].password).not.toEqual(
         createMemberDto.password,
       );
       await expect(
         cryptoService.comparePassword(
           createMemberDto.password,
-          saveFn.mock.calls[0][0].password!,
+          createMemberFnParam[0].password!,
         ),
       ).resolves.toEqual(true);
     });
 
     it('이미 존재하는 유저의 정보로 가입시 MemberAlreadyExistsException을 발생시킨다.', async () => {
       // Given
-      const findByEmailFn = jest
-        .spyOn(memberRepository, 'findOneByEmail')
-        .mockResolvedValueOnce(new MemberEntity());
+      const dto = {
+        password: faker.internet.password(),
+        email: faker.internet.email(),
+        firstName: faker.name.firstName(),
+        lastName: faker.name.lastName(),
+      };
+
+      const manager = MockTypeOrmFactory.getEntityManager();
 
       // When
+      const findByEmailFn = jest
+        .spyOn(memberRepository, 'findOneByEmail')
+        .mockResolvedValueOnce(MemberFixture.createMemberEntity());
+
       // Then
-      await expect(
-        memberService.addMember(
-          {
-            password: faker.internet.password(),
-            email: faker.internet.email(),
-            firstName: faker.name.firstName(),
-            lastName: faker.name.lastName(),
-          },
-          MockTypeOrmFactory.getEntityManager(),
-        ),
-      ).rejects.toThrow(MemberAlreadyExistException);
+      await expect(memberService.addMember(dto, manager)).rejects.toThrow(
+        MemberAlreadyExistException,
+      );
 
       expect(findByEmailFn).toHaveBeenCalled();
     });

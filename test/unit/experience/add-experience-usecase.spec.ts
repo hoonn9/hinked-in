@@ -12,10 +12,12 @@ import { CompanyRepository } from '../../../src/company/repository/company.repos
 import { IndustryRepository } from '../../../src/industry/industry.repository';
 import { ExperienceRepository } from '../../../src/experience/experience.repository';
 import { MockTypeOrmFactory } from '../../lib/mock/mock-typeorm';
+import { MemberRepository } from '../../../src/member/member.repository';
 
 describe('AddExperience UseCase', () => {
   let experienceService: ExperienceService;
   let employmentTypeRepository: EmploymentTypeRepository;
+  let experienceRepository: ExperienceRepository;
   let companyRepository: CompanyRepository;
   let industryRepository: IndustryRepository;
 
@@ -29,7 +31,10 @@ describe('AddExperience UseCase', () => {
     const mockIndustryRepository = {
       findOneByIdOrFail: jest.fn(),
     };
-    const mockExperienceRepository = {};
+    const mockExperienceRepository = {
+      createExperience: jest.fn(),
+    };
+    const mockMemberRepository = {};
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -50,11 +55,16 @@ describe('AddExperience UseCase', () => {
           provide: ExperienceRepository,
           useValue: mockExperienceRepository,
         },
+        {
+          provide: MemberRepository,
+          useValue: mockMemberRepository,
+        },
       ],
     }).compile();
 
     experienceService = module.get(ExperienceService);
     employmentTypeRepository = module.get(EmploymentTypeRepository);
+    experienceRepository = module.get(ExperienceRepository);
     companyRepository = module.get(CompanyRepository);
     industryRepository = module.get(IndustryRepository);
   });
@@ -66,6 +76,7 @@ describe('AddExperience UseCase', () => {
     const mockCompany = CompanyFixture.createCompanyEntity();
     const mockIndustry = IndustryFixture.createIndustryEntity();
     const mockMember = MemberFixture.createMemberEntity();
+    const manager = MockTypeOrmFactory.getEntityManager();
 
     const employmentTypeFn = jest
       .spyOn(employmentTypeRepository, 'findOneByIdOrFail')
@@ -78,6 +89,11 @@ describe('AddExperience UseCase', () => {
     const industryFn = jest
       .spyOn(industryRepository, 'findOneByIdOrFail')
       .mockResolvedValueOnce(mockIndustry);
+
+    const createExperienceFn = jest.spyOn(
+      experienceRepository,
+      'createExperience',
+    );
 
     // When
     const input: CreateExperienceBodyDto = {
@@ -92,18 +108,21 @@ describe('AddExperience UseCase', () => {
       startDate: faker.date.past(),
     };
 
-    // Then
-    await expect(
-      experienceService.addExperience(
-        input,
-        mockMember,
-        MockTypeOrmFactory.getEntityManager(),
-      ),
-    ).resolves.not.toThrow();
+    await experienceService.addExperience(input, mockMember, manager);
 
+    // Then
     expect(employmentTypeFn).toHaveBeenCalledWith(input.employmentTypeId);
     expect(companyFn).toHaveBeenCalledWith(input.companyId);
     expect(industryFn).toHaveBeenCalledWith(input.industryId);
+
+    const createExperienceFnCalledParam = createExperienceFn.mock.calls[0][0];
+
+    expect(createExperienceFnCalledParam).toEqual(
+      expect.objectContaining(input),
+    );
+
+    expect(createExperienceFnCalledParam.deleteDate).toBe(null);
+    expect(typeof createExperienceFnCalledParam.id).toBe('string');
   });
 
   it('존재하지 않는 EmploymentType의 ID일 경우 EntityNotExistException을 발생시킨다', async () => {
