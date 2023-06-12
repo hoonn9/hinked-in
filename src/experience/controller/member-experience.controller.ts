@@ -8,8 +8,8 @@ import { ApiHttpResponse } from '../../common/lib/swagger/decorator/api-http-res
 import { ApiHttpExceptionResponse } from '../../common/lib/swagger/decorator/api-http-exception-response.decorator';
 import { EXCEPTION_RESPONSE } from '../../common/exception/constant';
 
-@ApiTags('member')
-@UseController('member')
+@ApiTags('members')
+@UseController('members')
 export class MemberExperienceController {
   constructor(private readonly experienceService: ExperienceService) {}
 

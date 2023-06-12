@@ -15,8 +15,8 @@ import { SearchQueryPipe } from '../common/pipe/search-query-pipe';
 import { EntitySortQueryDto } from '../common/dto/entity-sort.dto';
 import { EntitySearchQueryDto } from '../common/dto/entity-search.dto';
 
-@ApiTags('school')
-@UseController('school')
+@ApiTags('schools')
+@UseController('schools')
 export class SchoolController {
   constructor(private readonly schoolService: SchoolService) {}
 

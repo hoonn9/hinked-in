@@ -15,8 +15,8 @@ import {
 } from '../common/dto/pagination.dto';
 import { QueryTransformPipe } from '../common/pipe/query-transform-pipe';
 
-@ApiTags('employment-type')
-@UseController('employment-type')
+@ApiTags('employment-types')
+@UseController('employment-types')
 export class EmploymentTypeController {
   constructor(private readonly employmentTypeService: EmploymentTypeService) {}
 

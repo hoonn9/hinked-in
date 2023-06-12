@@ -25,8 +25,8 @@ import { ApiCommandHttpResponse } from '../common/lib/swagger/decorator/api-http
 import { UseController } from '../common/decorator/use-controller.decorator';
 import { GetMeMemberDto } from './dto/get-me-member.dto';
 
-@ApiTags('member')
-@UseController('member')
+@ApiTags('members')
+@UseController('members')
 export class MemberController {
   constructor(private readonly memberService: MemberService) {}
 

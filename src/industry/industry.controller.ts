@@ -15,8 +15,8 @@ import { IndustryService } from './industry.service';
 import { EntitySortQueryDto } from '../common/dto/entity-sort.dto';
 import { EntitySearchQueryDto } from '../common/dto/entity-search.dto';
 
-@ApiTags('industry')
-@UseController('industry')
+@ApiTags('industries')
+@UseController('industries')
 export class IndustryController {
   constructor(private readonly industryService: IndustryService) {}
 

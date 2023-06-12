@@ -12,8 +12,8 @@ import { TriggerCompanyFollowParamDto } from './dto/trigger-company-follow.dto';
 import { ApiHttpExceptionResponse } from '../common/lib/swagger/decorator/api-http-exception-response.decorator';
 import { EXCEPTION_RESPONSE } from '../common/exception/constant';
 
-@ApiTags('company')
-@UseController('company')
+@ApiTags('companies')
+@UseController('companies')
 export class CompanyController {
   constructor(private readonly companyService: CompanyService) {}
 
@@ -29,7 +29,7 @@ export class CompanyController {
   ])
   @Auth()
   @TransactionRoute()
-  @Post(':id/follow')
+  @Post(':id/follows')
   async triggerCompanyFollow(
     @CurrentUser() member: MemberEntity,
     @TransactionContext() manager: TransactionManager,

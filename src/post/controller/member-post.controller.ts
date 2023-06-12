@@ -16,8 +16,8 @@ import { PostDto } from '../dto/post.dto';
 import { ApiHttpResponse } from '../../common/lib/swagger/decorator/api-http-response.decorator';
 import { ApiHttpExceptionResponse } from '../../common/lib/swagger/decorator/api-http-exception-response.decorator';
 
-@ApiTags('member')
-@UseController('member')
+@ApiTags('members')
+@UseController('members')
 export class MemberPostController {
   constructor(private readonly postService: PostService) {}
 

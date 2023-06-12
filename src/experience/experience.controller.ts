@@ -13,8 +13,8 @@ import { ApiHttpExceptionResponse } from '../common/lib/swagger/decorator/api-ht
 import { EXCEPTION_RESPONSE } from '../common/exception/constant';
 import { UseController } from '../common/decorator/use-controller.decorator';
 
-@ApiTags('experience')
-@UseController('experience')
+@ApiTags('experiences')
+@UseController('experiences')
 export class ExperienceController {
   constructor(private readonly experienceService: ExperienceService) {}
 

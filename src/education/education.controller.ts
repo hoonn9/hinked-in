@@ -13,8 +13,8 @@ import { TransactionContext } from '../common/decorator/transaction-manager.deco
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import { EducationDto } from './dto/education.dto';
 
-@ApiTags('education')
-@UseController('education')
+@ApiTags('educations')
+@UseController('educations')
 export class EducationController {
   constructor(private readonly educationService: EducationService) {}
 
