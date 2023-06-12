@@ -18,6 +18,11 @@ export const EXCEPTION_RESPONSE = {
     code: 'C002',
     message: '존재하지 않는 데이터입니다.',
   },
+  AlreadyExists: {
+    statusCode: HttpStatus.CONFLICT,
+    code: 'C003',
+    message: '이미 존재하는 데이터입니다.',
+  },
 
   // Auth
   LoginFail: {

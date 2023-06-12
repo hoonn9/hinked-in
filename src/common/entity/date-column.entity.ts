@@ -31,4 +31,8 @@ export abstract class DateColumnEntity {
     precision: 3,
   })
   deleteDate: Date | null = null;
+
+  static isSoftDeleted(entity: DateColumnEntity | null): boolean {
+    return entity !== null && entity.deleteDate !== null;
+  }
 }

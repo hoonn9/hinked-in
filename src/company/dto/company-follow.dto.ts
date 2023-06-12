@@ -1,21 +1,24 @@
 import { ApiUUIDProperty } from '../../common/lib/swagger/decorator/api-uuid-property.decorator';
-import { IsUUID } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsUUID } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { MemberDto } from '../../member/dto/member.dto';
 import { CompanyDto } from './company.dto';
-import { Type } from 'class-transformer';
+import { Type, plainToInstance } from 'class-transformer';
+import { CompanyFollowEntity } from '../entity/company-follow.entity';
+import { DateColumnDto } from '../../common/dto/date-columns.dto';
 
-export class CompanyFollowDto {
+export class CompanyFollowDto extends DateColumnDto {
   @ApiUUIDProperty()
   @IsUUID()
   id: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     name: 'member',
     type: MemberDto,
   })
+  @IsOptional()
   @Type(() => MemberDto)
-  member: MemberDto;
+  member?: MemberDto;
 
   @ApiProperty({
     name: 'company',
@@ -23,4 +26,15 @@ export class CompanyFollowDto {
   })
   @Type(() => CompanyDto)
   company: CompanyDto;
+
+  static fromEntity(entity: CompanyFollowEntity) {
+    const plain: CompanyFollowDto = {
+      id: entity.id,
+      company: CompanyDto.fromEntity(entity.company),
+      createDate: entity.createDate,
+      updateDate: entity.updateDate,
+    };
+
+    return plainToInstance(CompanyFollowDto, plain);
+  }
 }

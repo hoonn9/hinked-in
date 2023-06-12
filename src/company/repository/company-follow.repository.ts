@@ -48,6 +48,8 @@ export class CompanyFollowRepository extends CoreCustomRepository<CompanyFollowE
         deleteDate: null,
       },
     );
+
+    return companyFollow.id;
   }
 
   async deleteCompanyFollow(
@@ -57,5 +59,7 @@ export class CompanyFollowRepository extends CoreCustomRepository<CompanyFollowE
     await manager.softDelete(CompanyFollowEntity, {
       id: companyFollow.id,
     });
+
+    return companyFollow;
   }
 }
