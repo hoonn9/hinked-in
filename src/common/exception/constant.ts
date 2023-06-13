@@ -23,6 +23,11 @@ export const EXCEPTION_RESPONSE = {
     code: 'C003',
     message: '이미 존재하는 데이터입니다.',
   },
+  Uncaught: {
+    statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+    code: 'C004',
+    message: '서버에서 처리할 수 없는 요청입니다.',
+  },
 
   // Auth
   LoginFail: {
