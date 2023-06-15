@@ -4,9 +4,12 @@ import helmet from 'helmet';
 import * as cookieParser from 'cookie-parser';
 import { ConfigService } from '@nestjs/config';
 import { setupSwagger } from './common/lib/swagger/setup-swagger';
+import { Logger } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.useLogger(app.get(Logger));
 
   app.use(helmet());
   app.use(cookieParser());

@@ -13,6 +13,7 @@ import { EducationModule } from './education/education.module';
 import { EmploymentTypeModule } from './employment-type/employment-type.module';
 import { CompanyModule } from './company/company.module';
 import { PostModule } from './post/post.module';
+import { CustomLoggerModule } from './logger/custom-logger.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { PostModule } from './post/post.module';
     EducationModule,
     CompanyModule,
     PostModule,
+    CustomLoggerModule,
   ],
   controllers: [AppController],
 })
