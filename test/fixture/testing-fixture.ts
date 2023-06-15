@@ -6,6 +6,7 @@ import { envFilePath } from '../../src/common/config/env-file-path';
 import { ModuleMetadata } from '@nestjs/common';
 import { validateConfig } from '../../src/common/config/config-validator';
 import { DataSource } from 'typeorm';
+import { CustomLoggerModule } from '../../src/logger/custom-logger.module';
 
 export class TestingFixture {
   public dataSource: DataSource;
@@ -61,6 +62,7 @@ export class TestingFixture {
           isGlobal: true,
           validate: validateConfig,
         }),
+        CustomLoggerModule,
         ...(metadata?.imports ?? []),
       ],
       controllers: [...(metadata?.controllers ?? [])],

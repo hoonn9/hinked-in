@@ -16,17 +16,24 @@ export class WinstonModule {
               level: 'info',
               format: winston.format.json(),
               defaultMeta: {},
-              transports: [
+              transports: [],
+            });
+
+            if (process.env.NODE_ENV !== 'test') {
+              logger.add(
                 new winston.transports.File({
                   filename:
                     configService.get('LOGGING_ERROR_FILE_PATH') || 'error.log',
                   level: 'error',
                 }),
+              );
+
+              logger.add(
                 new winston.transports.File({
                   filename: configService.get('LOGGING_ALL_FILE_PATH'),
                 }),
-              ],
-            });
+              );
+            }
 
             const logFormat = winston.format.printf((info) => {
               let result = `${info.timestamp} [${info.context}] ${info.level} ${info.message}`;
