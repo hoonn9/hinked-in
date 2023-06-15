@@ -19,7 +19,11 @@ export class UncaughtExceptionFilter implements ExceptionFilter {
     const request: Request = host.switchToHttp().getRequest();
     const response: Response = host.switchToHttp().getResponse();
 
-    this.customLoggerService.logUncaught(exception, request);
+    this.customLoggerService.logUncaught(
+      exception,
+      request,
+      UncaughtExceptionFilter.name,
+    );
 
     const status =
       exception instanceof HttpException

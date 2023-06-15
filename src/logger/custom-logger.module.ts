@@ -1,13 +1,15 @@
 import { Global, Logger, Module } from '@nestjs/common';
-import { WinstonLogger } from '../common/lib/winston/winston-logger';
+import { WinstonService } from '../common/lib/winston/winston.service';
 import { CustomLoggerService } from './custom-logger.service';
+import { WinstonModule } from '../common/lib/winston/winston.module';
 
 @Global()
 @Module({
+  imports: [WinstonModule.register()],
   providers: [
     {
       provide: Logger,
-      useClass: WinstonLogger,
+      useClass: WinstonService,
     },
     CustomLoggerService,
   ],

@@ -67,6 +67,12 @@ class EnvironmentVariables {
 
   @IsString()
   SWAGGER_API_VERSION: string;
+
+  @IsString()
+  LOGGING_ERROR_FILE_PATH: string;
+
+  @IsString()
+  LOGGING_ALL_FILE_PATH: string;
 }
 
 export function validateConfig(config: Record<string, unknown>) {

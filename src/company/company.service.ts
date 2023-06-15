@@ -32,7 +32,7 @@ export class CompanyService {
         member,
         manager,
       );
-    console.log(followWithDeleted);
+
     if (!this.isCreatable(followWithDeleted)) {
       throw new AlreadyExistException('팔로우');
     }
