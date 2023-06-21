@@ -5,14 +5,23 @@ import {
 } from '@nestjs/common';
 import { AuthRequest } from '../type/auth-request.type';
 
-export const CurrentUser = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext) => {
-    const request: AuthRequest = ctx.switchToHttp().getRequest();
+interface CurrentUserOption {
+  isOptional?: boolean;
+}
 
-    if (request.user == null) {
-      throw new UnauthorizedException();
-    }
+export const CurrentUser = (options?: CurrentUserOption) =>
+  createParamDecorator(
+    (options: CurrentUserOption | undefined, ctx: ExecutionContext) => {
+      const request: AuthRequest = ctx.switchToHttp().getRequest();
 
-    return request.user;
-  },
-);
+      if (options?.isOptional) {
+        return request.user || null;
+      }
+
+      if (request.user == null) {
+        throw new UnauthorizedException();
+      }
+
+      return request.user;
+    },
+  )(options);

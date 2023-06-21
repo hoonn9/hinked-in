@@ -1,6 +1,6 @@
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UseController } from '../common/decorator/use-controller.decorator';
-import { Delete, HttpStatus, Param, Post } from '@nestjs/common';
+import { Delete, Get, HttpStatus, Param, Post } from '@nestjs/common';
 import { Auth } from '../auth/decorator/auth.decorator';
 import { TransactionRoute } from '../common/decorator/transaction-route.decorator';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
@@ -14,11 +14,43 @@ import { EXCEPTION_RESPONSE } from '../common/exception/constant';
 import { ApiHttpResponse } from '../common/lib/swagger/decorator/api-http-response.decorator';
 import { CompanyFollowDto } from './dto/company-follow.dto';
 import { RemoveCompanyFollowParamDto } from './dto/remove-company-follow.dto';
+import { GetCompanyDto, GetCompanyParamDto } from './dto/get-company.dto';
 
 @ApiTags('companies')
 @UseController('companies')
 export class CompanyController {
   constructor(private readonly companyService: CompanyService) {}
+
+  @ApiOperation({
+    description: '회사 정보를 가져옵니다.',
+  })
+  @ApiHttpResponse(HttpStatus.OK, [
+    {
+      title: '요청에 성공했을 경우',
+      description: '성공적으로 회사 정보를 가져왔을 떄의 응답입니다.',
+      type: GetCompanyDto,
+    },
+  ])
+  @ApiHttpExceptionResponse(HttpStatus.NOT_FOUND, [
+    {
+      title: '존재하지 않는 회사일 경우',
+      description: '존재하지 않는 회사에 대한 요청일 때 응답입니다.',
+      response: EXCEPTION_RESPONSE.EntityNotExist,
+    },
+  ])
+  @Auth()
+  @TransactionRoute()
+  @Get(':id')
+  async getCompany(
+    @TransactionContext() manager: TransactionManager,
+    @CurrentUser({
+      isOptional: true,
+    })
+    member: MemberEntity | null,
+    @Param() param: GetCompanyParamDto,
+  ): Promise<GetCompanyDto> {
+    return await this.companyService.getCompany(param, member, manager);
+  }
 
   @ApiOperation({
     description: '회사를 팔로우합니다.',

@@ -8,6 +8,7 @@ import { EntityNotExistException } from '../common/exception/custom-excpetion/en
 import { CompanyFollowDto } from './dto/company-follow.dto';
 import { CompanyFollowEntity } from './entity/company-follow.entity';
 import { CompanyEntity } from './entity/company.entity';
+import { GetCompanyDto, GetCompanyParamDto } from './dto/get-company.dto';
 
 @Injectable()
 export class CompanyService {
@@ -15,6 +16,45 @@ export class CompanyService {
     private readonly companyFollowRepository: CompanyFollowRepository,
     private readonly companyRepository: CompanyRepository,
   ) {}
+
+  async getCompany(
+    dto: GetCompanyParamDto,
+    member: MemberEntity | null,
+    manager: EntityManager,
+  ): Promise<GetCompanyDto> {
+    const company = await this.companyRepository.findOneByIdOrFail(
+      dto.id,
+      manager,
+    );
+
+    const followCount = await manager.count(CompanyFollowEntity, {
+      where: {
+        company: {
+          id: company.id,
+        },
+      },
+    });
+
+    let isFollowing: boolean | undefined = undefined;
+
+    if (member) {
+      isFollowing = await manager.exists(CompanyFollowEntity, {
+        where: {
+          company: {
+            id: company.id,
+          },
+          member: {
+            id: member.id,
+          },
+        },
+      });
+    }
+
+    return GetCompanyDto.fromEntity(company, {
+      followCount,
+      isFollowing,
+    });
+  }
 
   async addCompanyFollow(
     member: MemberEntity,
