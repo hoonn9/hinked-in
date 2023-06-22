@@ -9,8 +9,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { MemberEntity } from '../../member/entity/member.entity';
 import { AuthJwtController } from './controller/auth-jwt.controller';
 import { JwtAccessStrategy } from './strategy/auth-access.strategy';
+import { JwtOptionalAccessGuard } from './guard/auth-optional-access.guard';
 
-const strategies = [JwtRefreshStrategy, JwtAccessStrategy];
+const strategies = [
+  JwtRefreshStrategy,
+  JwtAccessStrategy,
+  JwtOptionalAccessGuard,
+];
 
 @Module({
   imports: [JwtModule, TypeOrmModule.forFeature([MemberEntity])],

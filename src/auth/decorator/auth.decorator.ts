@@ -2,9 +2,15 @@ import { applyDecorators, HttpStatus, UseGuards } from '@nestjs/common';
 import { JwtAccessGuard } from '../jwt/guard/auth-access.guard';
 import { ApiHttpExceptionResponse } from '../../common/lib/swagger/decorator/api-http-exception-response.decorator';
 import { EXCEPTION_RESPONSE } from '../../common/exception/constant';
+import { Role } from '../type/role.type';
+import { JwtOptionalAccessGuard } from '../jwt/guard/auth-optional-access.guard';
 
-export const Auth = () =>
-  applyDecorators(
+const roleDecoratorMap: Record<
+  Role,
+  (ClassDecorator | MethodDecorator | PropertyDecorator)[]
+> = {
+  USER: [UseGuards(JwtOptionalAccessGuard)],
+  MEMBER: [
     UseGuards(JwtAccessGuard),
     ApiHttpExceptionResponse(HttpStatus.UNAUTHORIZED, [
       {
@@ -14,4 +20,8 @@ export const Auth = () =>
         response: EXCEPTION_RESPONSE.LoginNeed,
       },
     ]),
-  );
+  ],
+};
+
+export const Auth = (role: Role = 'MEMBER') =>
+  applyDecorators(...roleDecoratorMap[role]);

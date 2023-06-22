@@ -38,14 +38,12 @@ export class CompanyController {
       response: EXCEPTION_RESPONSE.EntityNotExist,
     },
   ])
-  @Auth()
+  @Auth('USER')
   @TransactionRoute()
   @Get(':id')
   async getCompany(
     @TransactionContext() manager: TransactionManager,
-    @CurrentUser({
-      isOptional: true,
-    })
+    @CurrentUser()
     member: MemberEntity | null,
     @Param() param: GetCompanyParamDto,
   ): Promise<GetCompanyDto> {
