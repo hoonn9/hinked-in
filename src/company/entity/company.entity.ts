@@ -1,7 +1,16 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  RelationId,
+} from 'typeorm';
 import { DateColumnEntity } from '../../common/entity/date-column.entity';
 import { genUUID } from '../../common/lib/uuid';
 import { CompanyFollowEntity } from './company-follow.entity';
+import { MemberEntity } from '../../member/entity/member.entity';
 
 @Entity({ name: 'company' })
 export class CompanyEntity extends DateColumnEntity {
@@ -13,6 +22,18 @@ export class CompanyEntity extends DateColumnEntity {
 
   @Column({ name: 'name', type: 'varchar', length: 300 })
   name: string;
+
+  @RelationId((entity: CompanyEntity) => entity.owner)
+  @Column({ type: 'uuid', name: 'owner_id' })
+  ownerId: string;
+
+  @ManyToOne(() => MemberEntity)
+  @JoinColumn({
+    name: 'owner_id',
+    foreignKeyConstraintName: 'company_member_id_fkey',
+    referencedColumnName: 'id',
+  })
+  owner: MemberEntity | null;
 
   @OneToMany(() => CompanyFollowEntity, (follow) => follow.company)
   follows: CompanyFollowEntity[] | null;

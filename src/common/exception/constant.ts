@@ -40,6 +40,11 @@ export const EXCEPTION_RESPONSE = {
     code: 'A002',
     message: '로그인이 필요합니다. 로그인 후 이용하세요.',
   },
+  AccessDenied: {
+    statusCode: HttpStatus.UNAUTHORIZED,
+    code: 'A003',
+    message: '해당 요청에 대한 권한이 없습니다.',
+  },
 
   // Member
   MemberNotExist: {
