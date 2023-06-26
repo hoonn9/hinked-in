@@ -14,6 +14,7 @@ import { EmploymentTypeModule } from './employment-type/employment-type.module';
 import { CompanyModule } from './company/company.module';
 import { PostModule } from './post/post.module';
 import { CustomLoggerModule } from './logger/custom-logger.module';
+import { FollowModule } from './follow/follow.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CustomLoggerModule } from './logger/custom-logger.module';
     DatabaseModule,
     AuthModule,
     MemberModule,
+    FollowModule,
     EmploymentTypeModule,
     ExperienceModule,
     IndustryModule,
