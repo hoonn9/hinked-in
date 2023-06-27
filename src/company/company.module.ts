@@ -5,15 +5,14 @@ import { TypeOrmCustomModule } from '../database/typeorm/typeorm-custom.module';
 import { CompanyRepository } from './repository/company.repository';
 import { CompanyController } from './company.controller';
 import { CompanyService } from './company.service';
-import { CompanyFollowEntity } from './entity/company-follow.entity';
-import { CompanyFollowRepository } from './repository/company-follow.repository';
+import { FollowRepository } from '../follow/repository/follow.repository';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([CompanyEntity, CompanyFollowEntity]),
+    TypeOrmModule.forFeature([CompanyEntity]),
     TypeOrmCustomModule.forCustomRepository([
       CompanyRepository,
-      CompanyFollowRepository,
+      FollowRepository,
     ]),
   ],
   controllers: [CompanyController],

@@ -16,7 +16,6 @@ export class MemberFixture {
       currentPosition: null,
       educations: null,
       phoneNumber: faker.phone.number('010########'),
-      companyFollows: null,
       followings: null,
       ...mockDateColumns(),
       ...params,

@@ -1,11 +1,12 @@
 import { ApiUUIDProperty } from '../../common/lib/swagger/decorator/api-uuid-property.decorator';
-import { IsOptional, IsUUID } from 'class-validator';
+import { IsUUID } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { MemberDto } from '../../member/dto/member.dto';
-import { CompanyDto } from './company.dto';
+import { CompanyDto } from '../../company/dto/company.dto';
 import { Type, plainToInstance } from 'class-transformer';
-import { CompanyFollowEntity } from '../entity/company-follow.entity';
 import { DateColumnDto } from '../../common/dto/date-columns.dto';
+import { FollowEntity } from '../entity/follow.entity';
+import { CompanyEntity } from '../../company/entity/company.entity';
 
 export class CompanyFollowDto extends DateColumnDto {
   @ApiUUIDProperty()
@@ -16,21 +17,21 @@ export class CompanyFollowDto extends DateColumnDto {
     name: 'member',
     type: MemberDto,
   })
-  @IsOptional()
   @Type(() => MemberDto)
-  member?: MemberDto;
+  follower: MemberDto;
 
   @ApiProperty({
     name: 'company',
     type: CompanyDto,
   })
   @Type(() => CompanyDto)
-  company: CompanyDto;
+  following: CompanyDto;
 
-  static fromEntity(entity: CompanyFollowEntity) {
+  static fromEntity(entity: FollowEntity, company: CompanyEntity) {
     const plain: CompanyFollowDto = {
       id: entity.id,
-      company: CompanyDto.fromEntity(entity.company),
+      follower: MemberDto.fromEntity(entity.follower),
+      following: CompanyDto.fromEntity(company),
       createDate: entity.createDate,
       updateDate: entity.updateDate,
     };

@@ -9,7 +9,6 @@ export class CompanyFixture {
       name: faker.company.name(),
       ownerId: faker.datatype.uuid(),
       owner: null,
-      follows: null,
       ...mockDateColumns(),
       ...mockDateColumns(),
     };

@@ -1,53 +1,54 @@
 import { Injectable } from '@nestjs/common';
 import { MemberEntity } from '../../member/entity/member.entity';
 import { EntityManager } from 'typeorm';
-import { MemberRepository } from '../../member/member.repository';
-import { MemberFollowDto } from '../dto/member-follow.dto';
+import { CompanyFollowDto } from '../dto/company-follow.dto';
+import { CompanyRepository } from '../../company/repository/company.repository';
 import { FollowService } from './follow.service';
 
 @Injectable()
-export class MemberFollowService {
+export class CompanyFollowService {
   constructor(
-    private readonly memberRepository: MemberRepository,
+    private readonly companyRepository: CompanyRepository,
     private readonly followService: FollowService,
   ) {}
 
-  async addMemberFollow(
+  async addCompanyFollow(
     member: MemberEntity,
-    targetMemberId: string,
+    targetCompanyId: string,
     manager: EntityManager,
   ) {
-    const targetMember = await this.memberRepository.findOneByIdOrFail(
-      targetMemberId,
+    const company = await this.companyRepository.findOneByIdOrFail(
+      targetCompanyId,
       manager,
     );
+
     const createdFollow = await this.followService.addFollow(
-      targetMember.id,
+      company.id,
       member,
       manager,
     );
 
-    return MemberFollowDto.fromEntity(createdFollow, targetMember);
+    return CompanyFollowDto.fromEntity(createdFollow, company);
   }
 
-  async removeMemberFollow(
+  async removeCompanyFollow(
     member: MemberEntity,
-    targetMemberId: string,
+    companyId: string,
     manager: EntityManager,
   ) {
-    const targetMember = await this.memberRepository.findOneByIdOrFail(
-      targetMemberId,
+    const company = await this.companyRepository.findOneByIdOrFail(
+      companyId,
       manager,
     );
 
     const deletedFollow = await this.followService.removeFollow(
       member,
-      targetMember.id,
+      companyId,
       manager,
     );
 
     deletedFollow.follower = member;
 
-    return MemberFollowDto.fromEntity(deletedFollow, targetMember);
+    return CompanyFollowDto.fromEntity(deletedFollow, company);
   }
 }

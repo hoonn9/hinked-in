@@ -3,13 +3,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   RelationId,
 } from 'typeorm';
 import { DateColumnEntity } from '../../common/entity/date-column.entity';
 import { genUUID } from '../../common/lib/uuid';
-import { CompanyFollowEntity } from './company-follow.entity';
 import { MemberEntity } from '../../member/entity/member.entity';
 
 @Entity({ name: 'company' })
@@ -34,7 +32,4 @@ export class CompanyEntity extends DateColumnEntity {
     referencedColumnName: 'id',
   })
   owner: MemberEntity | null;
-
-  @OneToMany(() => CompanyFollowEntity, (follow) => follow.company)
-  follows: CompanyFollowEntity[] | null;
 }

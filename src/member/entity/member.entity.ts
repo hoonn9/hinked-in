@@ -12,7 +12,7 @@ import { MemberConstructorParams } from '../typing/member.type';
 import { genUUID } from '../../common/lib/uuid';
 import { ExperienceEntity } from '../../experience/entity/experience.entity';
 import { EducationEntity } from '../../education/entity/education.entity';
-import { CompanyFollowEntity } from '../../company/entity/company-follow.entity';
+import { FollowEntity } from '../../follow/entity/follow.entity';
 
 @Entity({
   name: 'member',
@@ -77,8 +77,8 @@ export class MemberEntity extends DateColumnEntity {
   @OneToMany(() => EducationEntity, (education) => education.member)
   educations: EducationEntity[] | null;
 
-  @OneToMany(() => CompanyFollowEntity, (companyFollow) => companyFollow.member)
-  companyFollows: CompanyFollowEntity[] | null;
+  @OneToMany(() => FollowEntity, (follow) => follow.follower)
+  followings: FollowEntity[] | null;
 
   static new(params: MemberConstructorParams) {
     const member = new MemberEntity();

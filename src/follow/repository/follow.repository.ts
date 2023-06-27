@@ -31,6 +31,7 @@ export class FollowRepository extends CoreCustomRepository<FollowEntity> {
     });
 
     await manager.insert(FollowEntity, followEntity);
+
     return followEntity.id;
   }
 
@@ -54,5 +55,20 @@ export class FollowRepository extends CoreCustomRepository<FollowEntity> {
     });
 
     return follow;
+  }
+
+  async isFollowing(
+    member: MemberEntity,
+    followingId: string,
+    manager: EntityManager,
+  ) {
+    return manager.exists(FollowEntity, {
+      where: {
+        follower: {
+          id: member.id,
+        },
+        followingId,
+      },
+    });
   }
 }
