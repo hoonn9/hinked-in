@@ -35,8 +35,7 @@ export class SchoolPaginationService extends CoreSearchableQueryService<SchoolEn
       await this.applyPagination(qb, SchoolCursor, pagination, sortOptions);
     }
 
-    const result = await qb.getMany();
-    return this.getPaginationResult(result, pagination, sortOptions);
+    return this.getPaginationResult(qb, pagination, sortOptions);
   }
 
   protected makeSearchWhereParams(

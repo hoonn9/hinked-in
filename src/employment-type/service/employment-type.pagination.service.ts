@@ -45,8 +45,7 @@ export class EmploymentTypePaginationService extends CoreSearchableQueryService<
       );
     }
 
-    const result = await qb.getMany();
-    return this.getPaginationResult(result, pagination, sortOptions);
+    return this.getPaginationResult(qb, pagination, sortOptions);
   }
 
   protected makeSearchWhereParams(

@@ -35,8 +35,7 @@ export class IndustryPaginationService extends CoreSearchableQueryService<Indust
       await this.applyPagination(qb, IndustryCursor, pagination, sortOptions);
     }
 
-    const result = await qb.getMany();
-    return this.getPaginationResult(result, pagination, sortOptions);
+    return this.getPaginationResult(qb, pagination, sortOptions);
   }
 
   protected makeSearchWhereParams(

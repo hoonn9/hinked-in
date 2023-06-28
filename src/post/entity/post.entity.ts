@@ -19,7 +19,7 @@ export class PostEntity extends DateColumnEntity {
   @Column({ type: 'varchar', length: 16, name: 'author_type' })
   authorType: PostAuthorType;
 
-  @Column({ type: 'uuid', name: 'authorId' })
+  @Column({ type: 'uuid', name: 'author_id' })
   authorId: string;
 
   static new(params: PostConstructorParam) {

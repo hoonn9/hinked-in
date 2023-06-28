@@ -12,7 +12,16 @@ import { EntitySortOption } from '../interface/entity-sort.interface';
 import { snakeToCamel } from '../util/case';
 
 export abstract class CorePaginationService<T extends ObjectLiteral> {
-  getPaginationResult(
+  async getPaginationResult(
+    qb: SelectQueryBuilder<T>,
+    pagination: EntityPaginationOption,
+    sortOptions?: EntitySortOption[],
+  ) {
+    const result = await qb.getMany();
+    return this.makePaginationResult(result, pagination, sortOptions);
+  }
+
+  private makePaginationResult(
     queryResult: T[],
     pagination: EntityPaginationOption,
     sortOptions?: EntitySortOption[],
@@ -93,7 +102,7 @@ export abstract class CorePaginationService<T extends ObjectLiteral> {
 
     if (!pagination.cursor) {
       qb.take(take);
-      qb.addOrderBy('id', 'ASC');
+      qb.addOrderBy(`${qb.alias}.id`, 'ASC');
 
       return qb;
     }
@@ -157,7 +166,7 @@ export abstract class CorePaginationService<T extends ObjectLiteral> {
     );
 
     qb.take(take);
-    qb.addOrderBy('id', 'ASC');
+    qb.addOrderBy(`${qb.alias}.id`, 'ASC');
 
     return qb;
   }

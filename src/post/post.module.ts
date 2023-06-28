@@ -9,6 +9,8 @@ import { MemberPostController } from './controller/member-post.controller';
 import { CompanyPostController } from './controller/company-post.controller';
 import { CompanyPostService } from './service/company-post.service';
 import { CompanyRepository } from '../company/repository/company.repository';
+import { MemberFollowingPostController } from './controller/member-following-post.controller';
+import { MemberFollowingPostService } from './service/member-following-post.service';
 
 @Module({
   imports: [
@@ -18,7 +20,16 @@ import { CompanyRepository } from '../company/repository/company.repository';
       CompanyRepository,
     ]),
   ],
-  controllers: [MemberPostController, CompanyPostController],
-  providers: [PostService, CompanyPostService, PostPaginationService],
+  controllers: [
+    MemberPostController,
+    CompanyPostController,
+    MemberFollowingPostController,
+  ],
+  providers: [
+    PostService,
+    CompanyPostService,
+    PostPaginationService,
+    MemberFollowingPostService,
+  ],
 })
 export class PostModule {}
